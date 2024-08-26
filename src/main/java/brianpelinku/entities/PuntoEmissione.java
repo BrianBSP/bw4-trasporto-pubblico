@@ -9,7 +9,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "punto_emissione")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class PuntoEmissione {
+public abstract class PuntoEmissione {
     @Id
     @GeneratedValue
     protected UUID id;
