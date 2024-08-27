@@ -145,7 +145,7 @@ public class Application {
                            switch (sceltaDistributore){
 
                                case 1:
-                                   System.out.println("Hai scelto " + distributore1.getNome() );1
+                                   System.out.println("Hai scelto " + distributore1.getNome() );
                                    break;
 
                                case 2:
