@@ -10,6 +10,7 @@ import jakarta.persistence.Persistence;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Scanner;
+import java.util.UUID;
 
 public class Application {
     private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("trasporto_pubblico");
@@ -120,6 +121,8 @@ public class Application {
 
                    Utente utente = new Utente(nomeUtente, cognomeUtente);
                    ud.save(utente);
+                   Tessera tesseraUtente = new Tessera(utente, LocalDate.now());
+                   System.out.println(tesseraUtente);
                    System.out.println("Utente salvato con successo!");
                    break;
 
@@ -128,6 +131,20 @@ public class Application {
 
 
                case 2:
+
+                   System.out.println("----Creazione Abbonamento----");
+                   System.out.println("inserisci ID tessera:");
+
+                   UUID tesseraID = UUID.fromString(scanner.nextLine());
+
+                   Tessera tessera = td.findById(String.valueOf(tesseraID));
+
+                   System.out.println("Inserisci durata abbonamento (MENSILE, ANNUALE)");
+                   String durataAbbonamento = scanner.nextLine();
+                   Durata durata = Durata.valueOf(durataAbbonamento.toUpperCase());
+
+                   System.out.println("---- Scegli punto di emissione ----");
+
                    System.out.println("1 --> Distributore Automatico");
                    System.out.println("2 --> Rivenditore Autorizzato");
 
@@ -140,7 +157,7 @@ public class Application {
                            System.out.println("1 --> Distributore 1");
                            System.out.println("2 --> Distributore 2");
 
-                           int sceltaDistributore = scanner.nextInt();
+                           int sceltaDistributore = Integer.parseInt(scanner.nextLine());
 
                            switch (sceltaDistributore){
 
@@ -155,6 +172,8 @@ public class Application {
 
 
                            }
+
+
                            break;
 
                        case 2:
@@ -175,6 +194,7 @@ public class Application {
 
 
                            }
+
 
 
 
