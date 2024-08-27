@@ -2,10 +2,13 @@ package brianpelinku.dao;
 
 import brianpelinku.entities.Abbonamento;
 
+import brianpelinku.entities.PuntoEmissione;
 import brianpelinku.exceptions.NotFoundException;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.*;
 
+import java.time.LocalDate;
+
+import java.util.List;
 import java.util.UUID;
 
 public class AbbonamentoDAO {
@@ -44,5 +47,48 @@ public class AbbonamentoDAO {
         transaction.commit();
 
         System.out.println("L'abbonamento " + found.getId() + " è stato eliminato correttamente!");
+    }
+
+    public List<Abbonamento> findAbbonamentiPerPuntoEmissione(PuntoEmissione puntoEmissione) {
+        TypedQuery<Abbonamento> query = em.createQuery("SELECT a FROM Abbonamento a WHERE a.idPuntoEmissione = :puntoEmissione ", Abbonamento.class);
+        query.setParameter("puntoEmissione", puntoEmissione);
+        if (query.getResultList().isEmpty()) {
+            System.out.println("Non ci sono Abbonamenti in questo punto di Emissione!");
+        }
+        return query.getResultList();
+    }
+
+    public List<Abbonamento> findAbbonamentiNelTempo(LocalDate data1, LocalDate data2 ) {
+        TypedQuery<Abbonamento> query = em.createQuery("SELECT a FROM Abbonamento a WHERE a.dataEmissione >= :data1 AND a.dataEmissione <= :data2 ", Abbonamento.class);
+        query.setParameter("data1", data1);
+        query.setParameter("data2", data2);
+
+        if (query.getResultList().isEmpty()) {
+            System.out.println("Non ci sono Abbonamenti in questo Periodo di tempo!");
+        }
+        return query.getResultList();
+    }
+    public void findValiditaAbbonamento(String tesseraId) {
+
+        try {
+            TypedQuery<Abbonamento> query = em.createQuery("SELECT a FROM Abbonamento a WHERE a.idTessera.id = :tesseraId", Abbonamento.class);
+            query.setParameter("tesseraId", UUID.fromString(tesseraId));
+            Abbonamento abbonamento = query.getSingleResult();
+            System.out.println("La validita del Abbonamento " + abbonamento.getId() + " è " + abbonamento.getDurata());
+
+        } catch (IllegalArgumentException e) {
+            // Gestisce errori relativi ai parametri della query, come un formato UUID non valido
+            System.err.println("Errore nei parametri della query: " + e.getMessage());
+        } catch (NoResultException e) {
+            // Gestisce il caso in cui non ci sono risultati per la query
+            System.err.println("Nessun abbonamento trovato per l'ID tessera: " + tesseraId);
+        } catch (PersistenceException e) {
+            // Gestisce errori generali di persistenza come problemi con la connessione al database
+            System.err.println("Errore durante l'accesso al database: " + e.getMessage());
+        } catch (Exception e) {
+            // Gestisce eventuali altre eccezioni
+            System.err.println("Errore imprevisto: " + e.getMessage());
+        }
+
     }
 }

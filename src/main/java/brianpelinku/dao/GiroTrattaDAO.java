@@ -5,7 +5,10 @@ import brianpelinku.entities.GiroTratta;
 import brianpelinku.exceptions.NotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.TypedQuery;
 
+import java.time.Duration;
+import java.util.List;
 import java.util.UUID;
 
 public class GiroTrattaDAO {
@@ -45,5 +48,21 @@ public class GiroTrattaDAO {
 
         System.out.println("Il giro " + found.getId() + " della tratta " +  found.getIdTratta().getNome() + " è stato eliminato correttamente!");
 
+    }
+    public void findTempoEffettivo(String trattaId) {
+
+        TypedQuery<GiroTratta> query = em.createQuery("SELECT a FROM GiroTratta a WHERE a.idTratta.id = :trattaId  ", GiroTratta.class);
+        query.setParameter("trattaId", UUID.fromString(trattaId));
+
+        List<GiroTratta> risultati = query.getResultList();
+
+        if (risultati.isEmpty()) {
+            System.out.println("Nessun risultato trovato per l'ID tratta: " + trattaId);
+        } else {
+            for (GiroTratta giroTratta : risultati) {
+                Duration durata = Duration.between(giroTratta.getTempoArrivo(), giroTratta.getTempoPartenza());
+                System.out.println("Durata per il giro tratta ID " + giroTratta.getId() + ": " + durata);
+            }
+        }
     }
 }

@@ -81,7 +81,7 @@ public class Abbonamento {
                 ", dataEmissione=" + dataEmissione +
                 ", durata=" + durata +
                 ", idTessera=" + idTessera.getId() +
-                ", idPuntoEmissione=" + idPuntoEmissione.getNome() +
+                ", PuntoEmissione=" + idPuntoEmissione.getNome() +
                 '}';
     }
 }
