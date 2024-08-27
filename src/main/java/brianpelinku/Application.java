@@ -287,6 +287,7 @@ public class Application {
                 ad.save(abbonamento);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
+                scanner.nextLine();
             }
         }
 
