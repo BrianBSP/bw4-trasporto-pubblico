@@ -108,10 +108,10 @@ public class Application {
         System.out.println( "Il numero di Abbonati del periodo richiesto è: " + ad.findNumeroAbbonamentiNelTempo(LocalDate.of(2024,6,12),LocalDate.of(2024,9,12)));
 
         System.out.println("*********************findBigliettiNelTempo********************************");
-        bd.findBigliettiNelTempo(LocalDate.of(2024,8,12),LocalDate.of(2024,9,12)).forEach(System.out::println);
+        bd.findBigliettiNelTempo(LocalDate.of(2024,6,12),LocalDate.of(2024,9,12)).forEach(System.out::println);
 
         System.out.println("*********************findValiditaAbbonamento********************************");
-       ad.findValiditaAbbonamento(tesseraUtente1.getId().toString());
+       ad.findValiditaAbbonamento(tesseraUtente2.getId().toString());
 
         System.out.println("*********************findStatiMezzo********************************");
         smd.findStatiMezzo(mezzo2).forEach(System.out::println);

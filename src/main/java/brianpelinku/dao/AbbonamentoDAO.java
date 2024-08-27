@@ -88,8 +88,13 @@ public class AbbonamentoDAO {
         try {
             TypedQuery<Abbonamento> query = em.createQuery("SELECT a FROM Abbonamento a WHERE a.idTessera.id = :tesseraId", Abbonamento.class);
             query.setParameter("tesseraId", UUID.fromString(tesseraId));
-            Abbonamento abbonamento = query.getSingleResult();
-            System.out.println("La validita del Abbonamento " + abbonamento.getId() + " è " + abbonamento.getDurata());
+
+            if (query.getResultList().isEmpty()) {
+                System.out.println("Non ci sono Abbonamenti su questa tessera!");
+            }else {
+                query.getResultList().forEach(abbonamento -> System.out.println("La validità del Abbonamento " + abbonamento.getId() + " è " + abbonamento.getDurata()));
+
+            }
 
         } catch (IllegalArgumentException e) {
             // Gestisce errori relativi ai parametri della query, come un formato UUID non valido

@@ -5,9 +5,7 @@ import brianpelinku.entities.Abbonamento;
 import brianpelinku.entities.Biglietto;
 import brianpelinku.entities.PuntoEmissione;
 import brianpelinku.exceptions.NotFoundException;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.TypedQuery;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -52,37 +50,83 @@ public class BigliettoDAO {
 
 
     public List<Biglietto> findBigliettoPerPuntoEmissione(PuntoEmissione puntoEmissione) {
-        TypedQuery<Biglietto> query = em.createQuery("SELECT a FROM Biglietto a WHERE a.idPuntoEmissione = :puntoEmissione ", Biglietto.class);
-        query.setParameter("puntoEmissione", puntoEmissione);
-        if (query.getResultList().isEmpty()) {
-            System.out.println("Non ci sono Abbonamenti in questo punto di Emissione!");
+        List<Biglietto> biglietti = null;
+
+        try {
+            TypedQuery<Biglietto> query = em.createQuery(
+                    "SELECT a FROM Biglietto a WHERE a.idPuntoEmissione = :puntoEmissione",
+                    Biglietto.class
+            );
+            query.setParameter("puntoEmissione", puntoEmissione);
+            biglietti = query.getResultList();
+
+            if (biglietti.isEmpty()) {
+                System.out.println("Non ci sono Biglietti in questo punto di Emissione!");
+            }
+        } catch (IllegalArgumentException e) {
+            // Gestione di errori relativi ai parametri della query
+            System.err.println("Errore nei parametri della query: " + e.getMessage());
+        } catch (NoResultException e) {
+            // Gestisce il caso in cui non ci sono risultati per la query
+            System.err.println("Nessun risultato trovato per il punto di emissione specificato.");
+        } catch (PersistenceException e) {
+            // Gestione di errori generali di persistenza
+            System.err.println("Errore durante l'accesso al database: " + e.getMessage());
+        } catch (Exception e) {
+            // Gestione di eventuali altre eccezioni non previste
+            System.err.println("Errore imprevisto: " + e.getMessage());
         }
-        return query.getResultList();
+
+        // Ritorna la lista dei biglietti, anche se potrebbe essere null o vuota
+        return biglietti;
     }
 
     public List<Biglietto> findBigliettiNelTempo(LocalDate data1, LocalDate data2 ) {
-        TypedQuery<Biglietto> query = em.createQuery("SELECT a FROM Biglietto a WHERE a.dataEmissione >= :data1 AND a.dataEmissione <= :data2 ", Biglietto.class);
-        query.setParameter("data1", data1);
-        query.setParameter("data2", data2);
+        List<Biglietto> biglietti = null;
 
-        if (query.getResultList().isEmpty()) {
-            System.out.println("Non ci sono Biglietti in questo Periodo di tempo!");
+        try {
+            TypedQuery<Biglietto> query = em.createQuery(
+                    "SELECT a FROM Biglietto a WHERE a.dataEmissione >= :data1 AND a.dataEmissione <= :data2",
+                    Biglietto.class
+            );
+            query.setParameter("data1", data1);
+            query.setParameter("data2", data2);
+            biglietti = query.getResultList();
+
+            if (biglietti.isEmpty()) {
+                System.out.println("Non ci sono Biglietti in questo periodo di tempo!");
+            }
+
+        } catch (IllegalArgumentException e) {
+            // Gestione di errori relativi ai parametri della query
+            System.err.println("Errore nei parametri della query: " + e.getMessage());
+        } catch (PersistenceException e) {
+            // Gestione di errori generali di persistenza
+            System.err.println("Errore durante l'accesso al database: " + e.getMessage());
+        } catch (Exception e) {
+            // Gestione di eventuali altre eccezioni non previste
+            System.err.println("Errore imprevisto: " + e.getMessage());
         }
-        return query.getResultList();
+        // Ritorna la lista dei biglietti, anche se potrebbe essere null o vuota
+        return biglietti;
     }
 
     public void updateTimbraturaBiglietto(String bigliettoId, boolean bool) {
+    try {
+    EntityTransaction transaction = em.getTransaction();
 
-        EntityTransaction transaction = em.getTransaction();
+    transaction.begin();
 
-        transaction.begin();
+    em.createQuery("UPDATE Biglietto a SET a.timbrato = :bool WHERE a.id = :bigliettoId")
+            .setParameter("bigliettoId", UUID.fromString(bigliettoId)).setParameter("bool", bool).executeUpdate();;
 
-        em.createQuery("UPDATE Biglietto a SET a.timbrato = :bool WHERE a.id = :bigliettoId")
-                .setParameter("bigliettoId", UUID.fromString(bigliettoId)).setParameter("bool", bool).executeUpdate();;
+    transaction.commit();
 
-        transaction.commit();
+    System.out.println("Timbratura biglietto avvenuta con successo!");
+    }
+    catch  (Exception e) {
+            System.err.println("Errore imprevisto: " + e.getMessage());
+        }
 
-
-        System.out.println("Timbratura biglietto avvenuta con successo!");
     }
 }
