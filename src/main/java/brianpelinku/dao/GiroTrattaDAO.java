@@ -97,7 +97,7 @@ public class GiroTrattaDAO {
         query.setParameter("mezzo", mezzo);
 
         if (query.getResultList().isEmpty()) {
-            System.out.println("Non ci sono stati per questo mezzo!");
+            System.out.println("Non ci sono giri per questo mezzo!");
         }
         return query.getResultList();
     }

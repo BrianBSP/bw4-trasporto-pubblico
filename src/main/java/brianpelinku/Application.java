@@ -43,7 +43,7 @@ public class Application {
         Abbonamento abbonamento3= new Abbonamento(LocalDate.of(2024,6,12), Durata.SETTIMANALE,tesseraUtente2,distributore1 );
         Abbonamento abbonamento4= new Abbonamento(LocalDate.of(2024,2,8), Durata.ANNUALE,tesseraUtente2,distributore1 );
 
-        Biglietto biglietto1 = new Biglietto(LocalDate.of(2024,8,26),90,false,tesseraUtente1,rivenditore2);
+        Biglietto biglietto1 = new Biglietto(LocalDate.of(2024,6,26),90,false,tesseraUtente1,rivenditore2);
         Biglietto biglietto2 = new Biglietto(LocalDate.of(2024,7,12),90,false,tesseraUtente2,distributore1);
 
         Tratta tratta1 = new Tratta("tratta1","partenza1","capolinea1",60);
@@ -64,7 +64,7 @@ public class Application {
 
 
 
-        Timbratura timbratura1 = new Timbratura(LocalDateTime.of(2024,7,12,10,30),mezzo1,biglietto1);
+        Timbratura timbratura1 = new Timbratura(LocalDateTime.of(2024,7,12,10,31),mezzo1,biglietto1);
         Timbratura timbratura2 = new Timbratura(LocalDateTime.of(2024,8,22,12,10),mezzo2,biglietto2);
 
         ped.save(distributore1);

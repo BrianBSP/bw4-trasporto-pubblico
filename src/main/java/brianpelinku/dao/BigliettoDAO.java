@@ -1,5 +1,6 @@
 package brianpelinku.dao;
 
+import brianpelinku.ENUM.StatoDelMezzo;
 import brianpelinku.entities.Abbonamento;
 import brianpelinku.entities.Biglietto;
 import brianpelinku.entities.PuntoEmissione;
@@ -68,5 +69,20 @@ public class BigliettoDAO {
             System.out.println("Non ci sono Biglietti in questo Periodo di tempo!");
         }
         return query.getResultList();
+    }
+
+    public void updateTimbraturaBiglietto(String bigliettoId, boolean bool) {
+
+        EntityTransaction transaction = em.getTransaction();
+
+        transaction.begin();
+
+        em.createQuery("UPDATE Biglietto a SET a.timbrato = :bool WHERE a.id = :bigliettoId")
+                .setParameter("bigliettoId", UUID.fromString(bigliettoId)).setParameter("bool", bool).executeUpdate();;
+
+        transaction.commit();
+
+
+        System.out.println("Timbratura biglietto avvenuta con successo!");
     }
 }

@@ -1,5 +1,6 @@
 package brianpelinku.dao;
 
+import brianpelinku.ENUM.StatoDelMezzo;
 import brianpelinku.entities.Abbonamento;
 import brianpelinku.entities.PuntoEmissione;
 import brianpelinku.entities.Timbratura;
@@ -21,12 +22,21 @@ public class TimbraturaDAO {
     }
 
     public void save(Timbratura timbratura) {
+        BigliettoDAO bd = new BigliettoDAO(em);
 
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
         em.persist(timbratura);
         transaction.commit();
 
+        if (!timbratura.getIdBiglietto().getTimbrato()) {
+            bd.updateTimbraturaBiglietto(timbratura.getIdBiglietto().getId().toString(),true);
+            System.out.println("Timbratura biglietto " + timbratura.getIdBiglietto().getId() + " cambiato in true");
+        } else {
+            //bd.updateTimbraturaBiglietto(timbratura.getIdBiglietto().getId().toString(),false);
+            System.out.println("Il biglietto " + timbratura.getIdBiglietto().getId() + " è già stato timbrato!");
+
+        }
         System.out.println("La timbratura " + timbratura.getId() + " è stata salvata correttamente!");
     }
 
