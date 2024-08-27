@@ -1,7 +1,6 @@
 package brianpelinku.entities;
 
-import brianpelinku.ENUM.Durata;
-import brianpelinku.ENUM.TipoRivenditore;
+import brianpelinku.ENUMS.Durata;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -29,7 +28,8 @@ public class Abbonamento {
     @JoinColumn(name = "id_punto_emissione")
     private PuntoEmissione idPuntoEmissione;
 
-    public Abbonamento(){}
+    public Abbonamento() {
+    }
 
     public Abbonamento(LocalDate dataEmissione, Durata durata, Tessera idTessera, PuntoEmissione idPuntoEmissione) {
         this.dataEmissione = dataEmissione;

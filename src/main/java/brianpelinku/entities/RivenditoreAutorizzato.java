@@ -1,12 +1,11 @@
 package brianpelinku.entities;
 
-import brianpelinku.ENUM.StatoDistributore;
-import brianpelinku.ENUM.TipoRivenditore;
+import brianpelinku.ENUMS.TipoRivenditore;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "rivenditore")
-public class RivenditoreAutorizzato extends PuntoEmissione{
+public class RivenditoreAutorizzato extends PuntoEmissione {
 
     @Column(name = "tipo")
     @Enumerated(EnumType.STRING)

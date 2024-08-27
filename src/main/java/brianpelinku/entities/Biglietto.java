@@ -1,10 +1,8 @@
 package brianpelinku.entities;
 
 
-import brianpelinku.ENUM.Durata;
 import jakarta.persistence.*;
 
-import java.sql.Time;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -33,7 +31,8 @@ public class Biglietto {
     @JoinColumn(name = "id_punto_emissione")
     private PuntoEmissione idPuntoEmissione;
 
-    public Biglietto(){}
+    public Biglietto() {
+    }
 
     public Biglietto(LocalDate dataEmissione, Integer validita, Boolean timbrato, Tessera idTessera, PuntoEmissione idPuntoEmissione) {
         this.dataEmissione = dataEmissione;

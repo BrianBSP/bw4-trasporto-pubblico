@@ -1,11 +1,10 @@
 package brianpelinku.entities;
 
 
-import brianpelinku.ENUM.StatoDelMezzo;
+import brianpelinku.ENUMS.StatoDelMezzo;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -26,7 +25,8 @@ public class StatoMezzo {
     @OneToOne(mappedBy = "idStato")
     private Mezzo mezzo;
 
-    public StatoMezzo(){}
+    public StatoMezzo() {
+    }
 
     public StatoMezzo(LocalDate dataInizio, StatoDelMezzo statoMezzo) {
         this.dataInizio = dataInizio;

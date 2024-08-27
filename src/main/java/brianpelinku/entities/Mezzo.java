@@ -1,12 +1,8 @@
 package brianpelinku.entities;
 
-import brianpelinku.ENUM.StatoDelMezzo;
-import brianpelinku.ENUM.TipoMezzo;
+import brianpelinku.ENUMS.TipoMezzo;
 import jakarta.persistence.*;
 
-import java.awt.image.TileObserver;
-import java.time.LocalDate;
-import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -32,7 +28,8 @@ public class Mezzo {
     @JoinColumn(name = "id_tratta")
     private Tratta idTratta;
 
-    public Mezzo(){}
+    public Mezzo() {
+    }
 
     public Mezzo(TipoMezzo tipo, Integer capienza, StatoMezzo idStato, Tratta idTratta) {
         this.tipo = tipo;
