@@ -1,11 +1,16 @@
 package brianpelinku.dao;
 
 import brianpelinku.entities.Abbonamento;
+import brianpelinku.entities.PuntoEmissione;
 import brianpelinku.entities.Timbratura;
 import brianpelinku.exceptions.NotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.TypedQuery;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 public class TimbraturaDAO {
@@ -43,5 +48,24 @@ public class TimbraturaDAO {
         transaction.commit();
 
         System.out.println("La timbratura " + found.getId() + " è stata eliminata correttamente!");
+    }
+
+    public List<Timbratura> findTimbratureNelTempo(LocalDateTime data1, LocalDateTime data2 ) {
+        TypedQuery<Timbratura> query = em.createQuery("SELECT a FROM Timbratura a WHERE a.dataTimbro >= :data1 AND a.dataTimbro <= :data2 ", Timbratura.class);
+        query.setParameter("data1", data1);
+        query.setParameter("data2", data2);
+
+        if (query.getResultList().isEmpty()) {
+            System.out.println("Non ci sono timbrature in questo Periodo di tempo!");
+        }
+        return query.getResultList();
+    }
+    public List<Timbratura> findTimbratureDiUnMezzo(String mezzoId) {
+        TypedQuery<Timbratura> query = em.createQuery("SELECT a FROM Timbratura a WHERE a.idMezzo.id = :mezzoId ", Timbratura.class);
+        query.setParameter("mezzoId", UUID.fromString(mezzoId));
+        if (query.getResultList().isEmpty()) {
+            System.out.println("Non ci sono Timbratura su questo mezzo!");
+        }
+        return query.getResultList();
     }
 }

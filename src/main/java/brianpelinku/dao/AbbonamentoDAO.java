@@ -2,6 +2,8 @@ package brianpelinku.dao;
 
 import brianpelinku.entities.Abbonamento;
 
+import brianpelinku.entities.GiroTratta;
+import brianpelinku.entities.Mezzo;
 import brianpelinku.entities.PuntoEmissione;
 import brianpelinku.exceptions.NotFoundException;
 import jakarta.persistence.*;
@@ -68,6 +70,19 @@ public class AbbonamentoDAO {
         }
         return query.getResultList();
     }
+
+    public Integer findNumeroAbbonamentiNelTempo(LocalDate data1, LocalDate data2 ) {
+        TypedQuery<Abbonamento> query = em.createQuery("SELECT a FROM Abbonamento a WHERE a.dataEmissione >= :data1 AND a.dataEmissione <= :data2 ", Abbonamento.class);
+        query.setParameter("data1", data1);
+        query.setParameter("data2", data2);
+
+        if (query.getResultList().isEmpty()) {
+            System.out.println("Non ci sono Abbonamenti in questo Periodo di tempo!");
+        }
+        return query.getResultList().size();
+    }
+
+
     public void findValiditaAbbonamento(String tesseraId) {
 
         try {

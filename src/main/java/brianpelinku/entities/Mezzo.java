@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 
 import java.awt.image.TileObserver;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -24,20 +25,27 @@ public class Mezzo {
     @Column(name = "capienza", nullable = false)
     private Integer capienza;
 
-    @OneToOne
-    @JoinColumn(name = "id_stato")
-    private StatoMezzo idStato;
+    @Column(name = "stato", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private StatoDelMezzo stato;
+
+    @OneToMany(mappedBy = "mezzo")
+    private List<StatoMezzo> idStato ;
 
     @ManyToOne
     @JoinColumn(name = "id_tratta")
     private Tratta idTratta;
 
+    @OneToMany(mappedBy = "idMezzo" )
+    private List<Timbratura> timbrature;
+
+
     public Mezzo(){}
 
-    public Mezzo(TipoMezzo tipo, Integer capienza, StatoMezzo idStato, Tratta idTratta) {
+    public Mezzo(TipoMezzo tipo, Integer capienza, StatoDelMezzo stato, Tratta idTratta) {
         this.tipo = tipo;
         this.capienza = capienza;
-        this.idStato = idStato;
+        this.stato = stato;
         this.idTratta = idTratta;
     }
 
@@ -61,11 +69,19 @@ public class Mezzo {
         this.capienza = capienza;
     }
 
-    public StatoMezzo getIdStato() {
+    public StatoDelMezzo getStato() {
+        return stato;
+    }
+
+    public void setStato(StatoDelMezzo stato) {
+        this.stato = stato;
+    }
+
+    public List<StatoMezzo> getIdStato() {
         return idStato;
     }
 
-    public void setIdStato(StatoMezzo idStato) {
+    public void setIdStato(List<StatoMezzo> idStato) {
         this.idStato = idStato;
     }
 
@@ -84,7 +100,7 @@ public class Mezzo {
                 ", tipo=" + tipo +
                 ", capienza=" + capienza +
                 ", idStato=" + idStato +
-                ", idTratta=" + idTratta +
+                ", idTratta=" + idTratta.getNome() +
                 '}';
     }
 }

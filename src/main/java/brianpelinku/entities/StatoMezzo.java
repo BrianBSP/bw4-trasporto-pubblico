@@ -23,15 +23,16 @@ public class StatoMezzo {
     @Enumerated(EnumType.STRING)
     private StatoDelMezzo statoMezzo;
 
-    @OneToOne(mappedBy = "idStato")
+    @ManyToOne
+    @JoinColumn(name = "id_mezzo")
     private Mezzo mezzo;
 
     public StatoMezzo(){}
 
-    public StatoMezzo(LocalDate dataInizio, StatoDelMezzo statoMezzo) {
+    public StatoMezzo(LocalDate dataInizio, StatoDelMezzo statoMezzo, Mezzo mezzo) {
         this.dataInizio = dataInizio;
         this.statoMezzo = statoMezzo;
-
+        this.mezzo = mezzo;
     }
 
     public UUID getId() {
@@ -62,13 +63,23 @@ public class StatoMezzo {
         this.mezzo = mezzo;
     }
 
+//    @Override
+//    public String toString() {
+//        return "StatoMezzo{" +
+//                "id=" + id +
+//                ", dataInizio=" + dataInizio +
+//                ", statoMezzo=" + statoMezzo +
+//                ", mezzo=" + mezzo.getTipo() + ", capienza=" + mezzo.getCapienza() + ", IdTratta=" + mezzo.getIdTratta() +
+//                '}';
+//    }
+
     @Override
     public String toString() {
         return "StatoMezzo{" +
                 "id=" + id +
                 ", dataInizio=" + dataInizio +
                 ", statoMezzo=" + statoMezzo +
-                ", mezzo=" + mezzo.getTipo() + ", capienza=" + mezzo.getCapienza() + ", IdStato=" + mezzo.getIdStato() + ", IdTratta=" + mezzo.getIdTratta() +
+                ", mezzo=" + mezzo.getTipo() +
                 '}';
     }
 }

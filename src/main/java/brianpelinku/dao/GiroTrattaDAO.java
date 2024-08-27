@@ -2,12 +2,16 @@ package brianpelinku.dao;
 
 import brianpelinku.entities.Abbonamento;
 import brianpelinku.entities.GiroTratta;
+import brianpelinku.entities.Mezzo;
+import brianpelinku.entities.StatoMezzo;
 import brianpelinku.exceptions.NotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -60,9 +64,53 @@ public class GiroTrattaDAO {
             System.out.println("Nessun risultato trovato per l'ID tratta: " + trattaId);
         } else {
             for (GiroTratta giroTratta : risultati) {
-                Duration durata = Duration.between(giroTratta.getTempoArrivo(), giroTratta.getTempoPartenza());
-                System.out.println("Durata per il giro tratta ID " + giroTratta.getId() + ": " + durata);
+                Duration durata = Duration.between(giroTratta.getTempoPartenza(), giroTratta.getTempoArrivo());
+                System.out.println("Durata per il giro tratta ID " + giroTratta.getId() + ": " + durata.toMinutes() + " minuti");
             }
         }
     }
+    public void findMediaTempoEffettivo(String trattaId) {
+
+        TypedQuery<GiroTratta> query = em.createQuery("SELECT a FROM GiroTratta a WHERE a.idTratta.id = :trattaId  ", GiroTratta.class);
+        query.setParameter("trattaId", UUID.fromString(trattaId));
+
+        List<GiroTratta> risultati = query.getResultList();
+        List<Long> tempiEffettivi = new ArrayList<>(risultati.size());
+
+        if (risultati.isEmpty()) {
+            System.out.println("Nessun risultato trovato per l'ID tratta: " + trattaId);
+        } else {
+            for (GiroTratta giroTratta : risultati) {
+                Duration durata = Duration.between(giroTratta.getTempoPartenza(), giroTratta.getTempoArrivo());
+                tempiEffettivi.add(durata.toMinutes());
+            }
+            int somma = tempiEffettivi.stream().mapToInt(Long::intValue).sum();
+            System.out.println("La Media Tempo Effettivo della tratta " + trattaId + " è " + somma/tempiEffettivi.size() + " minuti" );
+
+        }
+    }
+
+
+
+    public List<GiroTratta> findGiriMezzo(Mezzo mezzo) {
+        TypedQuery<GiroTratta> query = em.createQuery("SELECT a FROM GiroTratta a WHERE a.idMezzo = :mezzo ", GiroTratta.class);
+        query.setParameter("mezzo", mezzo);
+
+        if (query.getResultList().isEmpty()) {
+            System.out.println("Non ci sono stati per questo mezzo!");
+        }
+        return query.getResultList();
+    }
+
+    public void findNumeroGiriMezzo(Mezzo mezzo) {
+        TypedQuery<GiroTratta> query = em.createQuery("SELECT a FROM GiroTratta a WHERE a.idMezzo = :mezzo ", GiroTratta.class);
+        query.setParameter("mezzo", mezzo);
+
+        if (query.getResultList().isEmpty()) {
+            System.out.println("Non ci sono stati per questo mezzo!");
+        }
+        System.out.println("Il numero di giri che il mezzo " + mezzo.getId() + " ha fatto sulla tratta " + mezzo.getIdTratta().getPartenza() + " per " + mezzo.getIdTratta().getCapolinea() + " è " + query.getResultList().size() + " giri"); ;
+    }
+
+
 }

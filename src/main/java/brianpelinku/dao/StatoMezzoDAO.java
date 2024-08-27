@@ -1,11 +1,16 @@
 package brianpelinku.dao;
 
+import brianpelinku.ENUM.StatoDelMezzo;
 import brianpelinku.entities.Abbonamento;
+import brianpelinku.entities.Mezzo;
 import brianpelinku.entities.StatoMezzo;
 import brianpelinku.exceptions.NotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.TypedQuery;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 public class StatoMezzoDAO {
@@ -16,12 +21,19 @@ public class StatoMezzoDAO {
     }
 
     public void save(StatoMezzo stato) {
+        MezzoDAO md = new MezzoDAO(em);
 
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
         em.persist(stato);
         transaction.commit();
-
+        if (stato.getStatoMezzo() == StatoDelMezzo.MANUTENZIONE) {
+            md.updateStatoMezzo(stato.getMezzo().getId().toString(),StatoDelMezzo.MANUTENZIONE);
+            System.out.println("Stato del mezzo " + stato.getMezzo().getId() + " cambiato in MANUTENZIONE");
+        } else {
+            md.updateStatoMezzo(stato.getMezzo().getId().toString(),StatoDelMezzo.SERVIZIO);
+            System.out.println("Stato del mezzo " + stato.getMezzo().getId() + " cambiato in SERVIZIO");
+        }
         System.out.println("Lo stato " + stato.getStatoMezzo() + " è stato salvato correttamente!");
     }
 
@@ -43,5 +55,15 @@ public class StatoMezzoDAO {
         transaction.commit();
 
         System.out.println("Lo stato " + found.getStatoMezzo() + " è stato eliminato correttamente!");
+    }
+
+    public List<StatoMezzo> findStatiMezzo(Mezzo mezzo) {
+        TypedQuery<StatoMezzo> query = em.createQuery("SELECT a FROM StatoMezzo a WHERE a.mezzo = :mezzo ", StatoMezzo.class);
+        query.setParameter("mezzo", mezzo);
+
+        if (query.getResultList().isEmpty()) {
+            System.out.println("Non ci sono stati per questo mezzo!");
+        }
+        return query.getResultList();
     }
 }
