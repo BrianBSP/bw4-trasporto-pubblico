@@ -2,10 +2,14 @@ package brianpelinku.dao;
 
 import brianpelinku.entities.Abbonamento;
 import brianpelinku.entities.Biglietto;
+import brianpelinku.entities.PuntoEmissione;
 import brianpelinku.exceptions.NotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.TypedQuery;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 public class BigliettoDAO {
@@ -43,5 +47,26 @@ public class BigliettoDAO {
         transaction.commit();
 
         System.out.println("Il Biglietto " + found.getId() + " è stato eliminato correttamente!");
+    }
+
+
+    public List<Biglietto> findBigliettoPerPuntoEmissione(PuntoEmissione puntoEmissione) {
+        TypedQuery<Biglietto> query = em.createQuery("SELECT a FROM Biglietto a WHERE a.idPuntoEmissione = :puntoEmissione ", Biglietto.class);
+        query.setParameter("puntoEmissione", puntoEmissione);
+        if (query.getResultList().isEmpty()) {
+            System.out.println("Non ci sono Abbonamenti in questo punto di Emissione!");
+        }
+        return query.getResultList();
+    }
+
+    public List<Biglietto> findBigliettiNelTempo(LocalDate data1, LocalDate data2 ) {
+        TypedQuery<Biglietto> query = em.createQuery("SELECT a FROM Biglietto a WHERE a.dataEmissione >= :data1 AND a.dataEmissione <= :data2 ", Biglietto.class);
+        query.setParameter("data1", data1);
+        query.setParameter("data2", data2);
+
+        if (query.getResultList().isEmpty()) {
+            System.out.println("Non ci sono Biglietti in questo Periodo di tempo!");
+        }
+        return query.getResultList();
     }
 }

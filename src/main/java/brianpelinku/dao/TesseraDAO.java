@@ -1,11 +1,15 @@
 package brianpelinku.dao;
 
+import brianpelinku.entities.Abbonamento;
+import brianpelinku.entities.PuntoEmissione;
 import brianpelinku.entities.Tessera;
 import brianpelinku.entities.Utente;
 import brianpelinku.exceptions.NotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.TypedQuery;
 
+import java.util.List;
 import java.util.UUID;
 
 public class TesseraDAO {
@@ -42,6 +46,7 @@ public class TesseraDAO {
         transaction.commit();
 
         System.out.println("La tessera " + found.getId() + " è stata eliminata correttamente!");
-
     }
+
+
 }
