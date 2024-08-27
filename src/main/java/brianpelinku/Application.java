@@ -102,7 +102,8 @@ public class Application {
 
         while(!exit){
             System.out.println("---- Benvenuto! Scegli una di queste opzioni ----");
-            System.out.println("1 --> Inserisci punto di emissione");
+            System.out.println("1 --> Inserisci utente");
+            System.out.println("2 --> Inserisci  punto di emissione");
 
 
 
@@ -120,6 +121,7 @@ public class Application {
                    Utente utente = new Utente(nomeUtente, cognomeUtente);
                    ud.save(utente);
                    System.out.println("Utente salvato con successo!");
+                   break;
 
 
 
@@ -143,14 +145,17 @@ public class Application {
                            switch (sceltaDistributore){
 
                                case 1:
-                                   System.out.println("Hai scelto " + distributore1.getNome() );
+                                   System.out.println("Hai scelto " + distributore1.getNome() );1
+                                   break;
 
                                case 2:
                                    System.out.println("Hai scelto " + distributore2.getNome() );
+                                   break;
 
 
 
                            }
+                           break;
 
                        case 2:
                            System.out.println("Scegli rivenditore autorizzato");
