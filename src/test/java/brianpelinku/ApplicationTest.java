@@ -1,13 +1,25 @@
 package brianpelinku;
 
-import org.junit.jupiter.api.Test;
+import brianpelinku.entities.Mezzo;
+import brianpelinku.entities.StatoMezzo;
+import brianpelinku.entities.Tratta;
+import brianpelinku.enums.Stato;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.Date;
 
-class ApplicationTest {
+public class ApplicationTest {
+    public static void main(String[] args) {
 
-    @Test
-    void shouldAnswerWithTrue() {
-        assertTrue(true);
+        // creazione tratta
+        Tratta tratta1 = new Tratta("Linea 1", "Stazione Centrale", "Piazza del Duomo", 30);
+
+        // creazione stato mezzo usando l'enum Stato
+        StatoMezzo statoMezzo1 = new StatoMezzo(Stato.IN_SERVIZIO, new Date());
+
+        // creazione di un mezzo associato alla tratta
+        Mezzo mezzo1 = new Mezzo(100, tratta1);
+
+        System.out.println(mezzo1);
+        System.out.println(statoMezzo1);
     }
 }
