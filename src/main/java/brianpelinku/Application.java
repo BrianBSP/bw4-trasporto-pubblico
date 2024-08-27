@@ -233,6 +233,7 @@ public class Application {
                                     break;
                                 case 2:
                                     // acquisto abbonamento
+                                    acqiustaAbbonamento(tessera, puntoScelto);
                                     break;
                                 default:
                                     System.out.println("Inserire un numero intero tra 1 e 2.");
