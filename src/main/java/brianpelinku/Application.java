@@ -29,19 +29,6 @@ public class Application {
         TimbraturaDAO timbd = new TimbraturaDAO(em);
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
         DistributoreAutomatico distributore1 = new DistributoreAutomatico("Distributore1", "Location1", StatoDistributore.ATTIVO);
         DistributoreAutomatico distributore2 = new DistributoreAutomatico("Distributore2", "Location2", StatoDistributore.FUORI_SERVIZIO);
         /*ped.save(distributore1);
@@ -101,115 +88,108 @@ public class Application {
         Scanner scanner = new Scanner(System.in);
         boolean exit = false;
 
-        while(!exit){
+        while (!exit) {
             System.out.println("---- Benvenuto! Scegli una di queste opzioni ----");
             System.out.println("1 --> Inserisci utente");
             System.out.println("2 --> Inserisci  punto di emissione");
+            System.out.println("10 --> Esci");
+
+            int scelta = Integer.parseInt(scanner.nextLine());
+
+            switch (scelta) {
+                case 1:
+                    System.out.println("Inserire Nome ");
+                    String nomeUtente = scanner.nextLine();
+                    System.out.println("Inserire Cognome");
+                    String cognomeUtente = scanner.nextLine();
+
+                    Utente utente = new Utente(nomeUtente, cognomeUtente);
+                    ud.save(utente);
+                    Tessera tesseraUtente = new Tessera(utente, LocalDate.now());
+                    td.save(tesseraUtente);
+                    System.out.println(tesseraUtente);
+                    System.out.println("Utente salvato con successo!");
+                    break;
+
+                case 2:
+
+                    System.out.println("----Creazione Abbonamento----");
+                    System.out.println("inserisci Tessera:");
+
+                    UUID tesseraID = UUID.fromString(scanner.nextLine());
+                    Tessera tessera = td.findById(String.valueOf(tesseraID));
+
+                    System.out.println("Inserisci durata abbonamento (MENSILE, ANNUALE)");
+                    String durataAbbonamento = scanner.nextLine();
+                    Durata durata = Durata.valueOf(durataAbbonamento.toUpperCase());
+
+                    System.out.println("---- Scegli punto di emissione ----");
+                    System.out.println("1 --> Distributore Automatico");
+                    System.out.println("2 --> Rivenditore Autorizzato");
+
+                    int sceltaPuntoEmissione = scanner.nextInt();
+                    scanner.nextLine();
+
+                    switch (sceltaPuntoEmissione) {
+                        case 1:
+                            System.out.println("Scegli distributore automatico");
+                            System.out.println("1 --> Distributore 1");
+                            System.out.println("2 --> Distributore 2");
+
+                            int sceltaDistributore = Integer.parseInt(scanner.nextLine());
+
+                            switch (sceltaDistributore) {
+                                case 1:
+                                    System.out.println("Hai scelto " + distributore1.getNome());
+                                    Abbonamento abbonamentoDis1 = new Abbonamento(LocalDate.now(), durata, tessera, distributore1);
+                                    ad.save(abbonamentoDis1);
+                                    break;
+                                case 2:
+                                    System.out.println("Hai scelto " + distributore2.getNome());
+                                    Abbonamento abbonamentoDis2 = new Abbonamento(LocalDate.now(), durata, tessera, distributore2);
+                                    ad.save(abbonamentoDis2);
+                                    break;
+                            }
+                            break;
+
+                        case 2:
+                            System.out.println("Scegli rivenditore autorizzato");
+                            System.out.println("1 --> Rivenditore 1 " + rivenditore1.getTipo());
+                            System.out.println("2 --> Rivenditore 2 " + rivenditore2.getTipo());
+
+                            int sceltaRivenditore = Integer.parseInt(scanner.nextLine());
+
+                            switch (sceltaRivenditore) {
+                                case 1:
+                                    System.out.println("Hai scelto " + rivenditore1.getNome());
+                                    Abbonamento abbonamentoRiv1 = new Abbonamento(LocalDate.now(), durata, tessera, rivenditore1);
+                                    ad.save(abbonamentoRiv1);
+                                    break;
+                                case 2:
+                                    System.out.println("Hai scelto " + rivenditore2.getNome());
+                                    Abbonamento abbonamentoRiv2 = new Abbonamento(LocalDate.now(), durata, tessera, rivenditore2);
+                                    ad.save(abbonamentoRiv2);
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+
+                /*case 3:
+                    System.out.println("Compra un biglietto: ");
+
+                    break;*/
 
 
+                case 10:
+                    scanner.close();
+                    em.close();
+                    emf.close();
 
-            int scelta = scanner.nextInt();
-            scanner.nextLine();
-
-           switch (scelta){
-
-               case 1:
-                   System.out.println("Inserire Nome ");
-                   String nomeUtente = scanner.nextLine();
-                   System.out.println("Inserire Cognome");
-                   String cognomeUtente = scanner.nextLine();
-
-                   Utente utente = new Utente(nomeUtente, cognomeUtente);
-                   ud.save(utente);
-                   Tessera tesseraUtente = new Tessera(utente, LocalDate.now());
-                   System.out.println(tesseraUtente);
-                   System.out.println("Utente salvato con successo!");
-                   break;
-
-
-
-
-
-               case 2:
-
-                   System.out.println("----Creazione Abbonamento----");
-                   System.out.println("inserisci ID tessera:");
-
-                   UUID tesseraID = UUID.fromString(scanner.nextLine());
-
-                   Tessera tessera = td.findById(String.valueOf(tesseraID));
-
-                   System.out.println("Inserisci durata abbonamento (MENSILE, ANNUALE)");
-                   String durataAbbonamento = scanner.nextLine();
-                   Durata durata = Durata.valueOf(durataAbbonamento.toUpperCase());
-
-                   System.out.println("---- Scegli punto di emissione ----");
-
-                   System.out.println("1 --> Distributore Automatico");
-                   System.out.println("2 --> Rivenditore Autorizzato");
-
-                   int sceltaPuntoEmissione = scanner.nextInt();
-                   scanner.nextLine();
-
-                   switch (sceltaPuntoEmissione){
-                       case 1:
-                           System.out.println("Scegli distributore automatico");
-                           System.out.println("1 --> Distributore 1");
-                           System.out.println("2 --> Distributore 2");
-
-                           int sceltaDistributore = Integer.parseInt(scanner.nextLine());
-
-                           switch (sceltaDistributore){
-
-                               case 1:
-                                   System.out.println("Hai scelto " + distributore1.getNome() );
-                                   break;
-
-                               case 2:
-                                   System.out.println("Hai scelto " + distributore2.getNome() );
-                                   break;
-
-
-
-                           }
-
-
-                           break;
-
-                       case 2:
-                           System.out.println("Scegli rivenditore autorizzato");
-                           System.out.println("1 --> Rivenditore 1 " + rivenditore1.getTipo());
-                           System.out.println("2 --> Rivenditore 2 " + rivenditore2.getTipo());
-
-                           int sceltaRivenditore = scanner.nextInt();
-
-                           switch (sceltaRivenditore){
-
-                               case 1:
-                                   System.out.println("Hai scelto " + rivenditore1.getNome() );
-
-                               case 2:
-                                   System.out.println("Hai scelto " + rivenditore2.getNome() );
-
-
-
-                           }
-
-
-
-
-                   }
-
-
-
-
-
-           }
+            }
 
 
         }
-        scanner.close();
-        em.close();
-        emf.close();
+
     }
 }
