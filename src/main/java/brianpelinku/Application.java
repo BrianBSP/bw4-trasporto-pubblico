@@ -28,7 +28,17 @@ public class Application {
         TimbraturaDAO timbd = new TimbraturaDAO(em);
 
 
-        Scanner scanner = new Scanner(System.in);
+
+
+
+
+
+
+
+
+
+
+
 
 
         DistributoreAutomatico distributore1 = new DistributoreAutomatico("Distributore1", "Location1", StatoDistributore.ATTIVO);
@@ -87,6 +97,92 @@ public class Application {
         timbd.save(timbratura2);*/
 
 
+        Scanner scanner = new Scanner(System.in);
+        boolean exit = false;
+
+        while(!exit){
+            System.out.println("---- Benvenuto! Scegli una di queste opzioni ----");
+            System.out.println("1 --> Inserisci punto di emissione");
+
+
+
+            int scelta = scanner.nextInt();
+            scanner.nextLine();
+
+           switch (scelta){
+
+               case 1:
+                   System.out.println("Inserire Nome ");
+                   String nomeUtente = scanner.nextLine();
+                   System.out.println("Inserire Cognome");
+                   String cognomeUtente = scanner.nextLine();
+
+                   Utente utente = new Utente(nomeUtente, cognomeUtente);
+                   ud.save(utente);
+                   System.out.println("Utente salvato con successo!");
+
+
+
+
+
+               case 2:
+                   System.out.println("1 --> Distributore Automatico");
+                   System.out.println("2 --> Rivenditore Autorizzato");
+
+                   int sceltaPuntoEmissione = scanner.nextInt();
+                   scanner.nextLine();
+
+                   switch (sceltaPuntoEmissione){
+                       case 1:
+                           System.out.println("Scegli distributore automatico");
+                           System.out.println("1 --> Distributore 1");
+                           System.out.println("2 --> Distributore 2");
+
+                           int sceltaDistributore = scanner.nextInt();
+
+                           switch (sceltaDistributore){
+
+                               case 1:
+                                   System.out.println("Hai scelto " + distributore1.getNome() );
+
+                               case 2:
+                                   System.out.println("Hai scelto " + distributore2.getNome() );
+
+
+
+                           }
+
+                       case 2:
+                           System.out.println("Scegli rivenditore autorizzato");
+                           System.out.println("1 --> Rivenditore 1 " + rivenditore1.getTipo());
+                           System.out.println("2 --> Rivenditore 2 " + rivenditore2.getTipo());
+
+                           int sceltaRivenditore = scanner.nextInt();
+
+                           switch (sceltaRivenditore){
+
+                               case 1:
+                                   System.out.println("Hai scelto " + rivenditore1.getNome() );
+
+                               case 2:
+                                   System.out.println("Hai scelto " + rivenditore2.getNome() );
+
+
+
+                           }
+
+
+
+                   }
+
+
+
+
+
+           }
+
+
+        }
         scanner.close();
         em.close();
         emf.close();
