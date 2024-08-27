@@ -1,4 +1,4 @@
-package brianpelinku.ENUM;
+package brianpelinku.ENUMS;
 
 public enum TipoMezzo {
     TRAM, AUTOBUS
