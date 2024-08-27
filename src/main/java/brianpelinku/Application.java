@@ -3,30 +3,36 @@ package brianpelinku;
 import brianpelinku.ENUMS.*;
 import brianpelinku.dao.*;
 import brianpelinku.entities.*;
+import brianpelinku.exceptions.InputErratoExceptions;
+import brianpelinku.exceptions.NotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import jakarta.persistence.TypedQuery;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
 
 public class Application {
     private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("trasporto_pubblico");
+    private static Scanner scanner = new Scanner(System.in);
+    private static EntityManager em = emf.createEntityManager();
+    private static UtenteDAO ud = new UtenteDAO(em);
+    private static PuntoEmissioneDAO ped = new PuntoEmissioneDAO(em);
+    private static TesseraDAO td = new TesseraDAO(em);
+    private static AbbonamentoDAO ad = new AbbonamentoDAO(em);
+    private static BigliettoDAO bd = new BigliettoDAO(em);
+    private static TrattaDAO trd = new TrattaDAO(em);
+    private static StatoMezzoDAO smd = new StatoMezzoDAO(em);
+    private static MezzoDAO md = new MezzoDAO(em);
+    private static GiroTrattaDAO gd = new GiroTrattaDAO(em);
+    private static TimbraturaDAO timbd = new TimbraturaDAO(em);
 
     public static void main(String[] args) {
-        EntityManager em = emf.createEntityManager();
-        PuntoEmissioneDAO ped = new PuntoEmissioneDAO(em);
-        UtenteDAO ud = new UtenteDAO(em);
-        TesseraDAO td = new TesseraDAO(em);
-        AbbonamentoDAO ad = new AbbonamentoDAO(em);
-        BigliettoDAO bd = new BigliettoDAO(em);
-        TrattaDAO trd = new TrattaDAO(em);
-        StatoMezzoDAO smd = new StatoMezzoDAO(em);
-        MezzoDAO md = new MezzoDAO(em);
-        GiroTrattaDAO gd = new GiroTrattaDAO(em);
-        TimbraturaDAO timbd = new TimbraturaDAO(em);
 
 
         DistributoreAutomatico distributore1 = new DistributoreAutomatico("Distributore1", "Location1", StatoDistributore.ATTIVO);
@@ -85,111 +91,205 @@ public class Application {
         timbd.save(timbratura2);*/
 
 
-        Scanner scanner = new Scanner(System.in);
-        boolean exit = false;
-
-        while (!exit) {
-            System.out.println("---- Benvenuto! Scegli una di queste opzioni ----");
-            System.out.println("1 --> Inserisci utente");
-            System.out.println("2 --> Inserisci  punto di emissione");
-            System.out.println("10 --> Esci");
-
-            int scelta = Integer.parseInt(scanner.nextLine());
-
+        trasportoPubblico:
+        while (true) {
+            inizioGestione();
+            int scelta = gestioneInputScanner();
             switch (scelta) {
                 case 1:
-                    System.out.println("Inserire Nome ");
-                    String nomeUtente = scanner.nextLine();
-                    System.out.println("Inserire Cognome");
-                    String cognomeUtente = scanner.nextLine();
-
-                    Utente utente = new Utente(nomeUtente, cognomeUtente);
-                    ud.save(utente);
-                    Tessera tesseraUtente = new Tessera(utente, LocalDate.now());
-                    td.save(tesseraUtente);
-                    System.out.println(tesseraUtente);
-                    System.out.println("Utente salvato con successo!");
+                    // amministratore
+                    gestioneAmministratore();
                     break;
-
                 case 2:
-
-                    System.out.println("----Creazione Abbonamento----");
-                    System.out.println("inserisci Tessera:");
-
-                    UUID tesseraID = UUID.fromString(scanner.nextLine());
-                    Tessera tessera = td.findById(String.valueOf(tesseraID));
-
-                    System.out.println("Inserisci durata abbonamento (MENSILE, ANNUALE)");
-                    String durataAbbonamento = scanner.nextLine();
-                    Durata durata = Durata.valueOf(durataAbbonamento.toUpperCase());
-
-                    System.out.println("---- Scegli punto di emissione ----");
-                    System.out.println("1 --> Distributore Automatico");
-                    System.out.println("2 --> Rivenditore Autorizzato");
-
-                    int sceltaPuntoEmissione = scanner.nextInt();
-                    scanner.nextLine();
-
-                    switch (sceltaPuntoEmissione) {
-                        case 1:
-                            System.out.println("Scegli distributore automatico");
-                            System.out.println("1 --> Distributore 1");
-                            System.out.println("2 --> Distributore 2");
-
-                            int sceltaDistributore = Integer.parseInt(scanner.nextLine());
-
-                            switch (sceltaDistributore) {
-                                case 1:
-                                    System.out.println("Hai scelto " + distributore1.getNome());
-                                    Abbonamento abbonamentoDis1 = new Abbonamento(LocalDate.now(), durata, tessera, distributore1);
-                                    ad.save(abbonamentoDis1);
-                                    break;
-                                case 2:
-                                    System.out.println("Hai scelto " + distributore2.getNome());
-                                    Abbonamento abbonamentoDis2 = new Abbonamento(LocalDate.now(), durata, tessera, distributore2);
-                                    ad.save(abbonamentoDis2);
-                                    break;
-                            }
-                            break;
-
-                        case 2:
-                            System.out.println("Scegli rivenditore autorizzato");
-                            System.out.println("1 --> Rivenditore 1 " + rivenditore1.getTipo());
-                            System.out.println("2 --> Rivenditore 2 " + rivenditore2.getTipo());
-
-                            int sceltaRivenditore = Integer.parseInt(scanner.nextLine());
-
-                            switch (sceltaRivenditore) {
-                                case 1:
-                                    System.out.println("Hai scelto " + rivenditore1.getNome());
-                                    Abbonamento abbonamentoRiv1 = new Abbonamento(LocalDate.now(), durata, tessera, rivenditore1);
-                                    ad.save(abbonamentoRiv1);
-                                    break;
-                                case 2:
-                                    System.out.println("Hai scelto " + rivenditore2.getNome());
-                                    Abbonamento abbonamentoRiv2 = new Abbonamento(LocalDate.now(), durata, tessera, rivenditore2);
-                                    ad.save(abbonamentoRiv2);
-                                    break;
-                            }
-                            break;
-                    }
+                    // utente
                     break;
-
-                /*case 3:
-                    System.out.println("Compra un biglietto: ");
-
-                    break;*/
-
-
-                case 10:
-                    scanner.close();
-                    em.close();
-                    emf.close();
-
+                case 0:
+                    // esci
+                    break trasportoPubblico;
+                default:
+                    System.out.println("Segui le istruzioni per proseguire correttamente.");
             }
-
 
         }
 
+
+        em.close();
+        emf.close();
     }
+
+    public static void inizioGestione() {
+        System.out.println("-- Benvenuto --");
+        System.out.println("Segui le istruzioni per proseguire: ");
+        System.out.println("Premi 1 se sei un amministratore");
+        System.out.println("Premi 2 se sei un utente");
+        System.out.println("Premi 0 per uscire");
+    }
+
+    public static int gestioneInputScanner() {
+        while (true) {
+            try {
+                int num = Integer.parseInt(scanner.nextLine());
+                if (num >= 0 || num <= 2) {
+                    return num;
+                } else {
+                    System.out.println("Scelta non valida. Inserire un numero tra 0 e 2.");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println(e.getMessage());
+                scanner.nextLine();
+            }
+
+        }
+    }
+
+    public static void gestioneAmministratore() {
+        while (true) {
+            try {
+                System.out.println("Inserisci la password: ");
+                int password = Integer.parseInt(scanner.nextLine());
+                if (password == 1234) {
+                    System.out.println("Password CORRETTA. Accesso consentito.");
+                } else {
+                    System.out.println("Password ERRATA. Accesso negato.");
+                }
+            } catch (InputErratoExceptions e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    public static void gestioneUtente() {
+        while (true) {
+            System.out.println("Premi 1 per ACCEDERE e PROCEDI all'acquisto.");
+            System.out.println("Premi 2 per REGISTRARTI");
+            int sceltaUtente = Integer.parseInt(scanner.nextLine());
+            switch (sceltaUtente) {
+                case 1:
+                    gestioneUtenteRegistrato();
+                    break;
+                case 2:
+                    gestioneNuovoUtente();
+                    break;
+                default:
+                    System.out.println("Inserire un numero intero tra 1 e 2.");
+                    break;
+            }
+
+        }
+    }
+
+    public static void gestioneNuovoUtente() {
+        while (true) {
+            try {
+                System.out.println("Inserisci il tuo Nome: ");
+                String nomeUtente = scanner.nextLine();
+                System.out.println("Inserisci il tuo Cognome: ");
+                String cognomeUtente = scanner.nextLine();
+
+                // creo il nuovo utente
+                Utente utente = new Utente(nomeUtente, cognomeUtente);
+                ud.save(utente);
+                System.out.println("Utente creato correttamente.");
+                // creo tessera di conseguenza
+                Tessera tesseraUtente = new Tessera(utente, LocalDate.now());
+                System.out.println(tesseraUtente);
+                gestioneUtenteRegistrato();
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    public static List<PuntoEmissione> puntiVendita() {
+        TypedQuery<PuntoEmissione> query = em.createQuery("SELECT p FROM PuntoEmissione p", PuntoEmissione.class);
+        return query.getResultList();
+    }
+
+    public static void gestioneUtenteRegistrato() {
+        while (true) {
+            try {
+                System.out.println("Inserisci il tuo ID Tessera: ");
+                UUID tesseraID = UUID.fromString(scanner.nextLine());
+                Tessera tessera = td.findById(String.valueOf(tesseraID));
+                if (tessera != null) {
+                    List<PuntoEmissione> puntiVendita = puntiVendita();
+                    for (int i = 0; i < puntiVendita.size(); i++) {
+                        puntiVendita.forEach(System.out::println);
+                        System.out.println("Premi " + (i + 1) + " per " + puntiVendita.get(i).getNome());
+                    }
+
+                    try {
+                        int sceltaPuntoEmis = Integer.parseInt(scanner.nextLine()) - 1;
+                        if (sceltaPuntoEmis >= 0 && sceltaPuntoEmis < puntiVendita.size()) {
+                            PuntoEmissione puntoScelto = puntiVendita.get(sceltaPuntoEmis);
+                            System.out.println("Hai scelto il punto vendita " + puntoScelto.getNome());
+                            System.out.println("Premi 1 se vuoi comprare uno o più biglietti");
+                            System.out.println("Premi 2 se vuoi comprare un abbonamento");
+                            int scelta = Integer.parseInt(scanner.nextLine());
+                            switch (scelta) {
+                                case 1:
+                                    // acquisto biglietti
+                                    acquistoBiglietti(tessera, puntoScelto);
+                                    break;
+                                case 2:
+                                    // acquisto abbonamento
+                                    break;
+                                default:
+                                    System.out.println("Inserire un numero intero tra 1 e 2.");
+                                    break;
+                            }
+                        } else {
+                            System.out.println("Scelta NON valida. Inserire un numero tra 1 e " + puntiVendita.size());
+                            scanner.nextLine();
+                        }
+                    } catch (InputErratoExceptions e) {
+                        System.out.println(e.getMessage());
+                    }
+                } else {
+                    System.out.println("Tessera NON trovata.");
+                }
+            } catch (NotFoundException e) {
+                System.out.println(e.getMessage());
+                scanner.nextLine();
+            }
+        }
+    }
+
+    public static void acquistoBiglietti(Tessera tesseraID, PuntoEmissione puntoScelto) {
+        while (true) {
+            try {
+                System.out.println("Quanti biglietti vuoi comprare?");
+                int num = Integer.parseInt(scanner.nextLine());
+                for (int i = 0; i < num; i++) {
+                    Biglietto biglietto = new Biglietto(LocalDate.now(), 90, false, tesseraID, puntoScelto);
+                    bd.save(biglietto);
+                    System.out.println("Biglietto " + (i + 1) + " creato: " + biglietto);
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Input NON valido. Inserire un numero intero.");
+                scanner.nextLine();
+            } catch (InputErratoExceptions e) {
+                System.out.println(e.getMessage());
+                scanner.nextLine();
+            }
+        }
+    }
+
+    public static void acqiustaAbbonamento(Tessera tesseraID, PuntoEmissione puntoScelto) {
+        while (true) {
+            try {
+                System.out.println("Creazione Abbonamento in corso...");
+                System.out.println("Scegli la durata dell'abbonamento: ");
+                String durataAbbonamento = scanner.nextLine();
+                Durata durata = Durata.valueOf(durataAbbonamento.toUpperCase());
+                Abbonamento abbonamento = new Abbonamento(LocalDate.now(), durata, tesseraID, puntoScelto);
+                ad.save(abbonamento);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+    }
+
+
 }
