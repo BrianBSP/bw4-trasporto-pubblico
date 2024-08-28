@@ -1,6 +1,6 @@
 package brianpelinku.dao;
 
-import brianpelinku.ENUM.StatoDelMezzo;
+import brianpelinku.ENUMS.StatoDelMezzo;
 import brianpelinku.entities.Abbonamento;
 import brianpelinku.entities.Biglietto;
 import brianpelinku.entities.PuntoEmissione;
