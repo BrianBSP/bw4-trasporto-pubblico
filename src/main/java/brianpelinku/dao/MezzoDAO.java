@@ -1,6 +1,7 @@
 package brianpelinku.dao;
 
-import brianpelinku.ENUM.StatoDelMezzo;
+
+import brianpelinku.ENUMS.StatoDelMezzo;
 import brianpelinku.entities.Abbonamento;
 import brianpelinku.entities.Mezzo;
 import brianpelinku.entities.StatoMezzo;
@@ -19,7 +20,7 @@ public class MezzoDAO {
     }
 
     public void save(Mezzo mezzo) {
-        StatoMezzoDAO smd = new StatoMezzoDAO(em);
+        //StatoMezzoDAO smd = new StatoMezzoDAO(em);
         StatoMezzo statoMezzo1 = new StatoMezzo(LocalDate.now(),mezzo.getStato(),mezzo);
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();

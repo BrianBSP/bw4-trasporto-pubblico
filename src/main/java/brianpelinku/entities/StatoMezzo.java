@@ -79,7 +79,7 @@ public class StatoMezzo {
                 "id=" + id +
                 ", dataInizio=" + dataInizio +
                 ", statoMezzo=" + statoMezzo +
-                ", mezzo=" + mezzo.getTipo() +
+                ", mezzo=" + mezzo.getTipo() + ", IdMezzo=" + mezzo.getId() +
                 '}';
     }
 }

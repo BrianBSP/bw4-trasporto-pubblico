@@ -59,13 +59,11 @@ public class Application {
         Tratta tratta1 = new Tratta("tratta1","partenza1","capolinea1",60);
         Tratta tratta2 = new Tratta("tratta2","partenza2","capolinea2",60);
 
-       // StatoMezzo statoMezzo1= new StatoMezzo(LocalDate.of(2024,6,10), StatoDelMezzo.SERVIZIO);
-       // StatoMezzo statoMezzo2= new StatoMezzo(LocalDate.of(2024,6,10), StatoDelMezzo.MANUTENZIONE);
 
         Mezzo mezzo1 = new Mezzo(TipoMezzo.TRAM,100,StatoDelMezzo.SERVIZIO,tratta1);
         Mezzo mezzo2 = new Mezzo(TipoMezzo.AUTOBUS,40,StatoDelMezzo.SERVIZIO,tratta2);
 
-        StatoMezzo statoMezzo2 = new StatoMezzo(LocalDate.now(),StatoDelMezzo.MANUTENZIONE,mezzo2);
+        StatoMezzo statoMezzo1 = new StatoMezzo(LocalDate.now(),StatoDelMezzo.SERVIZIO,md.findById("2279ba24-b8a6-48c3-b1b4-4c06fc52084a"));
 
         GiroTratta giro1tratta1 = new GiroTratta(mezzo1,tratta1, LocalDateTime.of(2024,7,12,10,30),LocalDateTime.of(2024,7,12,11,20));
         GiroTratta giro2tratta1 = new GiroTratta(mezzo2,tratta1, LocalDateTime.of(2024,8,22,12,0),LocalDateTime.of(2024,8,22,12,58));
@@ -93,7 +91,7 @@ public class Application {
 //        bd.save(biglietto2);
 //        trd.save(tratta1);
 //        trd.save(tratta2);
-//       // smd.save(statoMezzo1);
+    //  smd.save(statoMezzo1);
 //       // smd.save(statoMezzo2);
 //        md.save(mezzo1);
 //        md.save(mezzo2);
@@ -125,7 +123,7 @@ public class Application {
 //        ad.findValiditaAbbonamento(tesseraUtente2.getId().toString());
 //
 //        System.out.println("*********************findStatiMezzo********************************");
-//        smd.findStatiMezzo(mezzo2).forEach(System.out::println);
+//        smd.findStatiMezzo(md.findById("2279ba24-b8a6-48c3-b1b4-4c06fc52084a")).forEach(System.out::println);
 //
 //        System.out.println("*********************findTimbratureNelTempo********************************");
 //        timbd.findTimbratureNelTempo(LocalDateTime.of(2024,7,2,10,4),LocalDateTime.of(2024,9,12,15,15)).forEach(System.out::println);
@@ -143,7 +141,7 @@ public class Application {
 //        gd.findTempoEffettivo(tratta1.getId().toString());
 //
 //        System.out.println("*********************findMediaTempoEffettivo********************************");
-//        gd.findMediaTempoEffettivo(tratta1.getId().toString());
+//        gd.findMediaTempoEffettivo("a75e415a-6b18-4b0f-a5c3-9b1fa839315b");
 
 
 

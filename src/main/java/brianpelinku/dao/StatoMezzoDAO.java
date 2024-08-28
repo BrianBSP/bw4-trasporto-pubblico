@@ -1,7 +1,7 @@
 package brianpelinku.dao;
 
-import brianpelinku.ENUM.StatoDelMezzo;
-import brianpelinku.entities.Abbonamento;
+import brianpelinku.ENUMS.StatoDelMezzo;
+
 import brianpelinku.entities.Mezzo;
 import brianpelinku.entities.StatoMezzo;
 import brianpelinku.exceptions.NotFoundException;
@@ -9,7 +9,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
 
-import java.time.LocalDate;
+
 import java.util.List;
 import java.util.UUID;
 
