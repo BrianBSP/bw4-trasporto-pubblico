@@ -130,15 +130,15 @@ public class Application {
 //
 //        System.out.println("*********************findTimbratureNelTempo********************************");
 //        timbd.findTimbratureDiUnMezzo(mezzo2.getId().toString()).forEach(System.out::println);
-//
+
 //        System.out.println("*********************findGiriMezzo********************************");
-//        gd.findGiriMezzo(mezzo2).forEach(System.out::println);
+//        gd.findGiriMezzo(md.findById("2279ba24-b8a6-48c3-b1b4-4c06fc52084a")).forEach(System.out::println);
 //
 //        System.out.println("*********************findNumeroGiriMezzo********************************");
-//        gd.findNumeroGiriMezzo(mezzo2);
+//        gd.findNumeroGiriMezzo(md.findById("2279ba24-b8a6-48c3-b1b4-4c06fc52084a"));
 //
 //        System.out.println("*********************findTempoEffettivo********************************");
-//        gd.findTempoEffettivo(tratta1.getId().toString());
+//        gd.findTempoEffettivo("a75e415a-6b18-4b0f-a5c3-9b1fa839315b");
 //
 //        System.out.println("*********************findMediaTempoEffettivo********************************");
 //        gd.findMediaTempoEffettivo("a75e415a-6b18-4b0f-a5c3-9b1fa839315b");

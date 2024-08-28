@@ -7,9 +7,11 @@ import brianpelinku.entities.StatoMezzo;
 import brianpelinku.exceptions.NotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.PersistenceException;
 import jakarta.persistence.TypedQuery;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -58,12 +60,24 @@ public class StatoMezzoDAO {
     }
 
     public List<StatoMezzo> findStatiMezzo(Mezzo mezzo) {
-        TypedQuery<StatoMezzo> query = em.createQuery("SELECT a FROM StatoMezzo a WHERE a.mezzo = :mezzo ", StatoMezzo.class);
-        query.setParameter("mezzo", mezzo);
+        List<StatoMezzo> statiMezzo = new ArrayList<>();
+        try {
+            TypedQuery<StatoMezzo> query = em.createQuery("SELECT a FROM StatoMezzo a WHERE a.mezzo = :mezzo", StatoMezzo.class);
+            query.setParameter("mezzo", mezzo);
 
-        if (query.getResultList().isEmpty()) {
-            System.out.println("Non ci sono stati per questo mezzo!");
+            statiMezzo = query.getResultList();
+
+            if (statiMezzo.isEmpty()) {
+                System.out.println("Non ci sono stati per questo mezzo!");
+            }
+        } catch (IllegalArgumentException e) {
+            System.err.println("Errore: Il parametro fornito non è valido.");
+        } catch (PersistenceException e) {
+            System.err.println("Errore di persistenza: Si è verificato un problema durante l'interrogazione del database.");
+        } catch (Exception e) {
+            System.err.println("Errore imprevisto: " + e.getMessage());
         }
-        return query.getResultList();
+
+        return statiMezzo;
     }
 }
