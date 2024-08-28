@@ -18,22 +18,22 @@ import java.util.Scanner;
 import java.util.UUID;
 
 public class Application {
+    public static final Scanner scanner = new Scanner(System.in);
     private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("trasporto_pubblico");
-    private static Scanner scanner = new Scanner(System.in);
-    private static EntityManager em = emf.createEntityManager();
-    private static UtenteDAO ud = new UtenteDAO(em);
-    private static PuntoEmissioneDAO ped = new PuntoEmissioneDAO(em);
-    private static TesseraDAO td = new TesseraDAO(em);
-    private static AbbonamentoDAO ad = new AbbonamentoDAO(em);
-    private static BigliettoDAO bd = new BigliettoDAO(em);
-    private static TrattaDAO trd = new TrattaDAO(em);
-    private static StatoMezzoDAO smd = new StatoMezzoDAO(em);
-    private static MezzoDAO md = new MezzoDAO(em);
-    private static GiroTrattaDAO gd = new GiroTrattaDAO(em);
-    private static TimbraturaDAO timbd = new TimbraturaDAO(em);
+    public static final EntityManager em = emf.createEntityManager();
+    public static final UtenteDAO ud = new UtenteDAO(em);
+    public static final PuntoEmissioneDAO ped = new PuntoEmissioneDAO(em);
+    public static final TesseraDAO td = new TesseraDAO(em);
+    public static final AbbonamentoDAO ad = new AbbonamentoDAO(em);
+    public static final BigliettoDAO bd = new BigliettoDAO(em);
+    public static final TrattaDAO trd = new TrattaDAO(em);
+    public static final StatoMezzoDAO smd = new StatoMezzoDAO(em);
+    public static final MezzoDAO md = new MezzoDAO(em);
+    public static final GiroTrattaDAO gd = new GiroTrattaDAO(em);
+    public static final TimbraturaDAO timbd = new TimbraturaDAO(em);
 
     public static void main(String[] args) {
-
+        //EntityManager em = emf.createEntityManager();
 
         DistributoreAutomatico distributore1 = new DistributoreAutomatico("Distributore1", "Location1", StatoDistributore.ATTIVO);
         DistributoreAutomatico distributore2 = new DistributoreAutomatico("Distributore2", "Location2", StatoDistributore.FUORI_SERVIZIO);
@@ -102,14 +102,16 @@ public class Application {
                     break;
                 case 2:
                     // utente
+                    gestioneUtente();
                     break;
                 case 0:
                     // esci
-                    break trasportoPubblico;
+                    scanner.close();
+                    return;
                 default:
                     System.out.println("Segui le istruzioni per proseguire correttamente.");
             }
-
+            break;
         }
 
 
@@ -155,6 +157,7 @@ public class Application {
             } catch (InputErratoExceptions e) {
                 System.out.println(e.getMessage());
             }
+            break;
         }
     }
 
@@ -169,11 +172,13 @@ public class Application {
                     break;
                 case 2:
                     gestioneNuovoUtente();
+
                     break;
                 default:
                     System.out.println("Inserire un numero intero tra 1 e 2.");
                     break;
             }
+            break;
 
         }
     }
@@ -192,11 +197,13 @@ public class Application {
                 System.out.println("Utente creato correttamente.");
                 // creo tessera di conseguenza
                 Tessera tesseraUtente = new Tessera(utente, LocalDate.now());
+                td.save(tesseraUtente);
                 System.out.println(tesseraUtente);
                 gestioneUtenteRegistrato();
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
+            break;
         }
     }
 
@@ -213,8 +220,9 @@ public class Application {
                 Tessera tessera = td.findById(String.valueOf(tesseraID));
                 if (tessera != null) {
                     List<PuntoEmissione> puntiVendita = puntiVendita();
+                    //puntiVendita.forEach(System.out::println);
                     for (int i = 0; i < puntiVendita.size(); i++) {
-                        puntiVendita.forEach(System.out::println);
+                        //puntiVendita.forEach(System.out::println);
                         System.out.println("Premi " + (i + 1) + " per " + puntiVendita.get(i).getNome());
                     }
 
@@ -249,10 +257,12 @@ public class Application {
                 } else {
                     System.out.println("Tessera NON trovata.");
                 }
+
             } catch (NotFoundException e) {
                 System.out.println(e.getMessage());
                 scanner.nextLine();
             }
+            break;
         }
     }
 
@@ -266,6 +276,7 @@ public class Application {
                     bd.save(biglietto);
                     System.out.println("Biglietto " + (i + 1) + " creato: " + biglietto);
                 }
+                break;
             } catch (NumberFormatException e) {
                 System.out.println("Input NON valido. Inserire un numero intero.");
                 scanner.nextLine();
@@ -281,6 +292,9 @@ public class Application {
             try {
                 System.out.println("Creazione Abbonamento in corso...");
                 System.out.println("Scegli la durata dell'abbonamento: ");
+                System.out.println("SETTIMANALE");
+                System.out.println("MENSILE");
+                System.out.println("ANNUALE");
                 String durataAbbonamento = scanner.nextLine();
                 Durata durata = Durata.valueOf(durataAbbonamento.toUpperCase());
                 Abbonamento abbonamento = new Abbonamento(LocalDate.now(), durata, tesseraID, puntoScelto);
@@ -289,6 +303,7 @@ public class Application {
                 System.out.println(e.getMessage());
                 scanner.nextLine();
             }
+            break;
         }
 
     }
