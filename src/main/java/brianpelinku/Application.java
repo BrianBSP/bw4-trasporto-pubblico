@@ -31,6 +31,7 @@ public class Application {
     public static final MezzoDAO md = new MezzoDAO(em);
     public static final GiroTrattaDAO gd = new GiroTrattaDAO(em);
     public static final TimbraturaDAO timbd = new TimbraturaDAO(em);
+    public static Tessera tesseraUtenteLoggato = null;
 
     public static void main(String[] args) {
         //EntityManager em = emf.createEntityManager();
@@ -59,8 +60,8 @@ public class Application {
         Tratta tratta2 = new Tratta("tratta2", "partenza2", "capolinea2", 60);
 
 
-        Mezzo mezzo1 = new Mezzo(TipoMezzo.TRAM, 100, StatoDelMezzo.SERVIZIO, tratta1);
-        Mezzo mezzo2 = new Mezzo(TipoMezzo.AUTOBUS, 40, StatoDelMezzo.SERVIZIO, tratta2);
+        Mezzo mezzo1 = new Mezzo(TipoMezzo.TRAM, 100, StatoDelMezzo.SERVIZIO, trd.findById("3f2ce3aa-4117-4248-8d3a-cd68e6704f96"));
+        Mezzo mezzo2 = new Mezzo(TipoMezzo.AUTOBUS, 40, StatoDelMezzo.SERVIZIO, trd.findById("4f702139-88da-44b7-9921-1c32c58ed534"));
 
         // StatoMezzo statoMezzo1 = new StatoMezzo(LocalDate.now(), StatoDelMezzo.SERVIZIO, md.findById("2279ba24-b8a6-48c3-b1b4-4c06fc52084a"));
 
@@ -91,8 +92,8 @@ public class Application {
 //        trd.save(tratta2);
         //  smd.save(statoMezzo1);
 //       // smd.save(statoMezzo2);
-//        md.save(mezzo1);
-//        md.save(mezzo2);
+        //md.save(mezzo1);
+        // md.save(mezzo2);
 //        smd.save(statoMezzo2);
 //        gd.save(giro1tratta1);
 //        gd.save(giro2tratta1);
@@ -217,73 +218,6 @@ public class Application {
         }
     }
 
-    public static void gestioneUtente() {
-        while (true) {
-            System.out.println("Premi 1 per ACCEDERE e PROCEDI all'acquisto.");
-            System.out.println("Premi 2 per REGISTRARTI");
-            int sceltaUtente = Integer.parseInt(scanner.nextLine());
-            switch (sceltaUtente) {
-                case 1:
-                    gestioneUtenteRegistrato();
-                    scanner.nextLine();
-                    break;
-                case 2:
-                    gestioneNuovoUtente();
-                    scanner.nextLine();
-                    break;
-                default:
-                    System.out.println("Inserire un numero intero tra 1 e 2.");
-                    break;
-            }
-            break;
-
-        }
-    }
-
-    public static void gestioneNuovoUtente() {
-        while (true) {
-            try {
-                System.out.println("Inserisci il tuo Nome: ");
-                String nomeUtente = scanner.nextLine();
-                System.out.println("Inserisci il tuo Cognome: ");
-                String cognomeUtente = scanner.nextLine();
-
-                // creo il nuovo utente
-                Utente utente = new Utente(nomeUtente, cognomeUtente);
-                ud.save(utente);
-                System.out.println("Utente creato correttamente.");
-                // creo tessera di conseguenza
-                Tessera tesseraUtente = new Tessera(utente, LocalDate.now());
-                td.save(tesseraUtente);
-                System.out.println(tesseraUtente);
-                gestioneUtenteRegistrato();
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-            break;
-        }
-    }
-
-    public static List<PuntoEmissione> puntiVendita() {
-        TypedQuery<PuntoEmissione> query = em.createQuery("SELECT p FROM PuntoEmissione p", PuntoEmissione.class);
-        return query.getResultList();
-    }
-
-    public static List<Tratta> tratte() {
-        TypedQuery<Tratta> query = em.createQuery("SELECT t FROM Tratta t", Tratta.class);
-        return query.getResultList();
-    }
-
-    public static List<Biglietto> bigliettiUtente() {
-        TypedQuery<Biglietto> query = em.createQuery("SELECT b FROM Biglietto b", Biglietto.class);
-        return query.getResultList();
-    }
-
-    public static List<Mezzo> mezzi() {
-        TypedQuery<Mezzo> query = em.createQuery("SELECT m FROM Mezzo m", Mezzo.class);
-        return query.getResultList();
-    }
-
     public static void gestioneUtenteRegistrato() {
         while (true) {
             try {
@@ -313,7 +247,7 @@ public class Application {
                                     break;
                                 case 2:
                                     // acquisto abbonamento
-                                    acqiustaAbbonamento(tessera, puntoScelto);
+                                    acquistaAbbonamento(tessera, puntoScelto);
                                     break;
                                 default:
                                     System.out.println("Inserire un numero intero tra 1 e 2.");
@@ -340,6 +274,31 @@ public class Application {
         }
     }
 
+    public static List<PuntoEmissione> puntiVendita() {
+        TypedQuery<PuntoEmissione> query = em.createQuery("SELECT p FROM PuntoEmissione p", PuntoEmissione.class);
+        return query.getResultList();
+    }
+
+    public static List<Tratta> tratte() {
+        TypedQuery<Tratta> query = em.createQuery("SELECT t FROM Tratta t", Tratta.class);
+        return query.getResultList();
+    }
+
+    public static List<Biglietto> bigliettiUtente(Tessera tessera) {
+        TypedQuery<Biglietto> query = em.createQuery("SELECT b FROM Biglietto b WHERE b.idTessera = :tessera", Biglietto.class);
+        query.setParameter("tessera", tessera);
+        //System.out.println(tessera);
+        return query.getResultList();
+    }
+
+    public static List<Mezzo> mezzi(Tratta tratta) {
+        TypedQuery<Mezzo> query = em.createQuery("SELECT m FROM Mezzo m WHERE m.idTratta = :tratta", Mezzo.class);
+        query.setParameter("tratta", tratta);
+        System.out.println("Mezzi disponibili per questa tratta: " + tratta.getNome());
+        query.getResultList().forEach(System.out::println);
+        return query.getResultList();
+    }
+
     public static void acquistoBiglietti(Tessera tesseraID, PuntoEmissione puntoScelto) {
         while (true) {
             try {
@@ -350,60 +309,9 @@ public class Application {
                     bd.save(biglietto);
                     System.out.println("Biglietto " + (i + 1) + " creato: " + biglietto);
                 }
-                System.out.println("Scegli la tratta: ");
-                List<Tratta> tratte = tratte();
-                for (int i = 0; i < tratte().size(); i++) {
-                    System.out.println("Premi " + (i + 1) + " per " + tratte().get(i).getNome());
-                }
-                try {
-                    // scegli tratta
-                    int scegliTratta = Integer.parseInt(scanner.nextLine()) - 1;
-                    if (scegliTratta >= 0 && scegliTratta < tratte().size()) {
-                        Tratta trattoScelto = tratte.get(scegliTratta);
-                        System.out.println("Hai scelto la tratta " + trattoScelto.getNome());
-
-                        // scegli mezzo
-                        System.out.println("Scegli il mezzo per questa tratta: " + trattoScelto.getNome());
-                        List<Mezzo> mezzi = mezzi();
-                        for (int i = 0; i < mezzi().size(); i++) {
-                            System.out.println("Premi " + (i + 1) + " per " + mezzi().get(i).getTipo());
-                        }
-                        try {
-                            int scegliMezzo = Integer.parseInt(scanner.nextLine());
-                            if (scegliMezzo >= 0 && scegliMezzo < mezzi().size()) {
-                                Mezzo mezzoScelto = mezzi.get(scegliMezzo);
-                                System.out.println("Hai scelto il mezzo: " + mezzoScelto.getTipo());
-                            }
-                        } catch (Exception e) {
-                            System.out.println(e.getMessage());
-                        }
+                Tratta trattaScelta = scegliTratta(tesseraID);
 
 
-                        if (num > 1) {
-                            System.out.println("Scegli il biglietto da timbrare. ");
-                            List<Biglietto> biglietti = bigliettiUtente();
-                            for (int i = 0; i < biglietti.size(); i++) {
-                                System.out.println("Premi " + (i + 1) + " per timbrare questo biglietto: " + biglietti.get(i).getId());
-                            }
-                            try {
-                                int scegliBigdaTimbrare = Integer.parseInt(scanner.nextLine()) - 1;
-                                if (scegliBigdaTimbrare >= 0 && scegliBigdaTimbrare < biglietti.size()) {
-                                    Biglietto biglScelto = biglietti.get(scegliBigdaTimbrare);
-                                    //Timbratura timbratura = new Timbratura(LocalDateTime.now(), );
-                                }
-
-                            } catch (Exception e) {
-                                System.out.println(e.getMessage());
-                            }
-                        } else if (num == 1) {
-                            System.out.println("Timbra il tuo biglietto.");
-                        }
-
-                    }
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                }
-                break;
             } catch (NumberFormatException e) {
                 System.out.println("Input NON valido. Inserire un numero intero.");
                 scanner.nextLine();
@@ -411,10 +319,11 @@ public class Application {
                 System.out.println(e.getMessage());
                 scanner.nextLine();
             }
+            break;
         }
     }
 
-    public static void acqiustaAbbonamento(Tessera tesseraID, PuntoEmissione puntoScelto) {
+    public static void acquistaAbbonamento(Tessera tesseraID, PuntoEmissione puntoScelto) {
         while (true) {
             try {
                 System.out.println("Creazione Abbonamento in corso...");
@@ -455,5 +364,150 @@ public class Application {
 
     }
 
+    public static Tratta scegliTratta(Tessera tesseraID) {
+        Tratta trattoScelto = null;
+        try {
+            System.out.println("Scegli la tratta: ");
+            List<Tratta> tratte = tratte();
+            for (int i = 0; i < tratte().size(); i++) {
+                System.out.println("Premi " + (i + 1) + " per " + tratte().get(i).getNome());
+            }
 
+            // scegli tratta
+            int scegliTratta = Integer.parseInt(scanner.nextLine()) - 1;
+            if (scegliTratta >= 0 && scegliTratta < tratte().size()) {
+                trattoScelto = tratte.get(scegliTratta);
+                System.out.println("Hai scelto la tratta " + trattoScelto.getNome());
+                Mezzo mezzoScelto = scegliMezzo(trattoScelto);
+                Biglietto bigliettoScelto = scegliBiglietto(tesseraID);
+                // timbratura
+                timbraBiglietto(mezzoScelto, bigliettoScelto);
+            }
+
+        } catch (NumberFormatException e) {
+            System.out.println("Input non valido. Inserire un numero intero.");
+        } catch (Exception e) {
+            System.out.println("Errore durante la scelta della tratta: " + e.getMessage());
+        }
+
+        return trattoScelto;
+    }
+
+    public static Mezzo scegliMezzo(Tratta tratta) {
+        // scegli mezzo
+
+        Mezzo mezzoScelto = null;
+        try {
+            System.out.println("Scegli il mezzo per questa tratta: " + tratta.getNome());
+            List<Mezzo> mezzi = mezzi(tratta);
+            for (int i = 0; i < mezzi.size(); i++) {
+                System.out.println("Premi " + (i + 1) + " per " + mezzi.get(i).getTipo());
+            }
+            int scegliMezzo = Integer.parseInt(scanner.nextLine()) - 1;
+            if (scegliMezzo >= 0 && scegliMezzo < mezzi.size()) {
+                mezzoScelto = mezzi.get(scegliMezzo);
+                System.out.println("Hai scelto il mezzo: " + mezzoScelto.getTipo());
+
+            } else {
+                System.out.println("Scelta NON valida. Riprova.");
+                scanner.nextLine();
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Input non valido. Inserire un numero intero.");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        return mezzoScelto;
+    }
+
+    public static void gestioneUtente() {
+        while (true) {
+            System.out.println("Premi 1 per ACCEDERE e PROCEDI all'acquisto.");
+            System.out.println("Premi 2 per REGISTRARTI");
+            int sceltaUtente = Integer.parseInt(scanner.nextLine());
+            switch (sceltaUtente) {
+                case 1:
+                    gestioneUtenteRegistrato();
+
+                    break;
+                case 2:
+                    Tessera tesseraUtente = gestioneNuovoUtente();
+
+                    break;
+                default:
+                    System.out.println("Inserire un numero intero tra 1 e 2.");
+                    break;
+            }
+            break;
+
+        }
+    }
+
+    public static Tessera gestioneNuovoUtente() {
+        while (true) {
+            try {
+                System.out.println("Inserisci il tuo Nome: ");
+                String nomeUtente = scanner.nextLine();
+                System.out.println("Inserisci il tuo Cognome: ");
+                String cognomeUtente = scanner.nextLine();
+
+                // creo il nuovo utente
+                Utente utente = new Utente(nomeUtente, cognomeUtente);
+                ud.save(utente);
+                System.out.println("Utente creato correttamente.");
+                // creo tessera di conseguenza
+                Tessera tesseraUtente = new Tessera(utente, LocalDate.now());
+                td.save(tesseraUtente);
+                System.out.println(tesseraUtente);
+                gestioneUtenteRegistrato();
+                tesseraUtenteLoggato = td.findById(tesseraUtente.getId().toString());
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+            break;
+        }
+        return tesseraUtenteLoggato;
+    }
+
+    public static Biglietto scegliBiglietto(Tessera tesseraID) {
+        Biglietto bigliettoScelto = null;
+        try {
+            System.out.println("Scegli il biglietto che vuoi timbrare: ");
+            for (int i = 0; i < bigliettiUtente(tesseraID).size(); i++) {
+                System.out.println("Premi " + (i + 1) + " per " + bigliettiUtente(tesseraID).get(i).getId());
+            }
+            // scegli biglietto
+            int scegliBiglietto = Integer.parseInt(scanner.nextLine()) - 1;
+            if (scegliBiglietto >= 0 && scegliBiglietto < bigliettiUtente(tesseraID).size()) {
+                bigliettoScelto = bigliettiUtente(tesseraID).get(scegliBiglietto);
+                System.out.println("Hai scelto il biglietto " + bigliettoScelto.getId());
+            } else {
+                System.out.println("Scelta NON valida. Riprova.");
+                scanner.nextLine();
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return bigliettoScelto;
+    }
+
+    public static void timbraBiglietto(Mezzo mezzo, Biglietto biglietto) {
+
+        try {
+            Timbratura timbratura = new Timbratura(LocalDateTime.now(), mezzo, biglietto);
+            timbd.save(timbratura);
+            System.out.println("Il biglietto " + biglietto.getId() + " é stato timbrato correttamente.");
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+
+    }
 }
+
+
+
+
