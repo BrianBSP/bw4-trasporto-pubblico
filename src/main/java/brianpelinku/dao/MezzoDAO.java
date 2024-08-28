@@ -1,11 +1,14 @@
 package brianpelinku.dao;
 
+import brianpelinku.ENUM.StatoDelMezzo;
 import brianpelinku.entities.Abbonamento;
 import brianpelinku.entities.Mezzo;
+import brianpelinku.entities.StatoMezzo;
 import brianpelinku.exceptions.NotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 public class MezzoDAO {
@@ -16,10 +19,12 @@ public class MezzoDAO {
     }
 
     public void save(Mezzo mezzo) {
-
+        StatoMezzoDAO smd = new StatoMezzoDAO(em);
+        StatoMezzo statoMezzo1 = new StatoMezzo(LocalDate.now(),mezzo.getStato(),mezzo);
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
         em.persist(mezzo);
+        em.persist(statoMezzo1);
         transaction.commit();
 
         System.out.println("Il mezzo " + mezzo.getId() + " è stato salvato correttamente!");
@@ -43,5 +48,20 @@ public class MezzoDAO {
         transaction.commit();
 
         System.out.println("Il mezzo " + found.getId() + " è stato eliminato correttamente!");
+    }
+
+    public void updateStatoMezzo(String mezzoId, StatoDelMezzo statoDelMezzo) {
+
+        EntityTransaction transaction = em.getTransaction();
+
+        transaction.begin();
+
+       em.createQuery("UPDATE Mezzo a SET a.stato = :statoDelMezzo WHERE a.id = :mezzoId")
+               .setParameter("mezzoId", UUID.fromString(mezzoId)).setParameter("statoDelMezzo", statoDelMezzo).executeUpdate();;
+
+        transaction.commit();
+
+
+        System.out.println("Modifica stato mezzo avvenuta con successo!");
     }
 }
