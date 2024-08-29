@@ -105,48 +105,6 @@ public class Application {
 //        timbd.save(timbratura2);
 
 
-//        System.out.println("*********************findAbbonamentiPerPuntoEmissione********************************");
-//        ad.findAbbonamentiPerPuntoEmissione(distributore1).forEach(System.out::println);
-//
-//        System.out.println("*********************findBigliettoPerPuntoEmissione********************************");
-//        bd.findBigliettoPerPuntoEmissione(distributore1).forEach(System.out::println);
-//
-//        System.out.println("*********************findAbbonamentiNelTempo********************************");
-//        ad.findAbbonamentiNelTempo(LocalDate.of(2024,6,12),LocalDate.of(2024,9,12)).forEach(System.out::println);
-//
-//        System.out.println("*********************findNumeroAbbonamentiNelTempo********************************");
-//        System.out.println( "Il numero di Abbonati del periodo richiesto è: " + ad.findNumeroAbbonamentiNelTempo(LocalDate.of(2024,6,12),LocalDate.of(2024,9,12)));
-//
-//        System.out.println("*********************findBigliettiNelTempo********************************");
-//        bd.findBigliettiNelTempo(LocalDate.of(2024,6,12),LocalDate.of(2024,9,12)).forEach(System.out::println);
-//
-//        System.out.println("*********************findNumeroBigliettiNelTempo********************************");
-//        System.out.println( "Il numero di Abbonati del periodo richiesto è: " + bd.findNumeroBigliettiNelTempo(LocalDate.of(2024,6,12),LocalDate.of(2024,9,12)));
-//
-//        System.out.println("*********************findValiditaAbbonamento********************************");
-//        ad.findValiditaAbbonamento(tesseraUtente2.getId().toString());
-//
-//        System.out.println("*********************findStatiMezzo********************************");
-//        smd.findStatiMezzo(md.findById("2279ba24-b8a6-48c3-b1b4-4c06fc52084a")).forEach(System.out::println);
-//
-//        System.out.println("*********************findTimbratureNelTempo********************************");
-//        timbd.findTimbratureNelTempo(LocalDateTime.of(2024,7,2,10,4),LocalDateTime.of(2024,9,12,15,15)).forEach(System.out::println);
-//
-//        System.out.println("*********************findTimbratureDiUnMezzo********************************");
-//        timbd.findTimbratureDiUnMezzo(mezzo2.getId().toString()).forEach(System.out::println);
-
-//        System.out.println("*********************findGiriMezzo********************************");
-//        gd.findGiriMezzo(md.findById("2279ba24-b8a6-48c3-b1b4-4c06fc52084a")).forEach(System.out::println);
-//
-//        System.out.println("*********************findNumeroGiriMezzo********************************");
-//        gd.findNumeroGiriMezzo(md.findById("2279ba24-b8a6-48c3-b1b4-4c06fc52084a"));
-//
-//        System.out.println("*********************findTempoEffettivo********************************");
-//        gd.findTempoEffettivo("a75e415a-6b18-4b0f-a5c3-9b1fa839315b");
-//
-//        System.out.println("*********************findMediaTempoEffettivo********************************");
-//        gd.findMediaTempoEffettivo("a75e415a-6b18-4b0f-a5c3-9b1fa839315b");
-
 boolean start = true;
         trasportoPubblico:
         while (start) {
@@ -489,7 +447,10 @@ boolean start = true;
         //System.out.println(tessera);
 
         List<Biglietto> resultList = query.getResultList();
-        if (resultList.isEmpty()) {
+
+        boolean ciSonoBigliettiNonTimbrati= resultList.stream().anyMatch(biglietto -> !biglietto.getTimbrato());
+
+        if (resultList.isEmpty() || !ciSonoBigliettiNonTimbrati) {
             System.out.println("Non ci sono Biglietti su questa tessera!");
             System.out.println("Compra dei biglietti!");
             sceltaPuntoEmissioneEOperazione(tessera);
