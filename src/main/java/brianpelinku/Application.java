@@ -67,7 +67,7 @@ public class Application {
 
 
         GiroTratta giro1tratta1 = new GiroTratta(mezzo1, tratta1, LocalDateTime.of(2024, 7, 12, 10, 30), LocalDateTime.of(2024, 7, 12, 11, 20));
-        GiroTratta giro2tratta1 = new GiroTratta(md.findById("a80b7562-9554-4d81-b3f3-328f237dfaf9"), trd.findById("a75e415a-6b18-4b0f-a5c3-9b1fa839315b"), LocalDateTime.of(2024, 8, 22, 12, 0), LocalDateTime.of(2024, 8, 22, 12, 58));
+        // GiroTratta giro2tratta1 = new GiroTratta(md.findById("a80b7562-9554-4d81-b3f3-328f237dfaf9"), trd.findById("a75e415a-6b18-4b0f-a5c3-9b1fa839315b"), LocalDateTime.of(2024, 8, 22, 12, 0), LocalDateTime.of(2024, 8, 22, 12, 58));
         GiroTratta giro3tratta1 = new GiroTratta(mezzo2, tratta1, LocalDateTime.of(2024, 8, 22, 12, 58), LocalDateTime.of(2024, 8, 22, 14, 1));
         GiroTratta giro4tratta1 = new GiroTratta(mezzo2, tratta1, LocalDateTime.of(2024, 8, 22, 14, 2), LocalDateTime.of(2024, 8, 22, 15, 5));
 
@@ -309,6 +309,10 @@ public class Application {
         }
     }
 
+    public static void trovaAbbonamentiVendutiInPeriodo() {
+
+    }
+
     public static void trovaBigliettiVendutiInPeriodo() {
         try {
             System.out.println("Inserisci data di inizio periodo: ");
@@ -462,6 +466,7 @@ public class Application {
                     if (scegliTratta >= 0 && scegliTratta < tratte().size()) {
                         Tratta trattoScelto = tratte.get(scegliTratta);
                         System.out.println("Hai scelto la tratta " + trattoScelto.getNome());
+                        esciContinua(tesseraID);
                     }
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
