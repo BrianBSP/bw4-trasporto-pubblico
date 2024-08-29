@@ -1,13 +1,11 @@
 package brianpelinku.dao;
 
-
 import brianpelinku.entities.Timbratura;
 import brianpelinku.exceptions.NotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.PersistenceException;
 import jakarta.persistence.TypedQuery;
-
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -31,7 +29,7 @@ public class TimbraturaDAO {
             em.persist(timbratura);
             transaction.commit();
 
-            bd.updateTimbraturaBiglietto(timbratura.getIdBiglietto().getId().toString(),true);
+            bd.updateTimbraturaBiglietto(timbratura.getIdBiglietto().getId().toString(), true);
             System.out.println("Timbratura biglietto " + timbratura.getIdBiglietto().getId() + " cambiato in true");
 
             System.out.println("La timbratura " + timbratura.getId() + " è stata salvata correttamente!");
@@ -65,7 +63,7 @@ public class TimbraturaDAO {
     }
 
 
-    public List<Timbratura> findTimbratureNelTempo(LocalDateTime data1, LocalDateTime data2 ) {
+    public List<Timbratura> findTimbratureNelTempo(LocalDateTime data1, LocalDateTime data2) {
         List<Timbratura> timbrature = new ArrayList<>();
         try {
             TypedQuery<Timbratura> query = em.createQuery(

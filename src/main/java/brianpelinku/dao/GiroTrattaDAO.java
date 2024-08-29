@@ -1,13 +1,13 @@
 package brianpelinku.dao;
 
 import brianpelinku.ENUMS.StatoDelMezzo;
-import brianpelinku.entities.*;
+import brianpelinku.entities.GiroTratta;
+import brianpelinku.entities.Mezzo;
 import brianpelinku.exceptions.NotFoundException;
 import jakarta.persistence.*;
 
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,8 +28,8 @@ public class GiroTrattaDAO {
             em.persist(giroTratta);
             transaction.commit();
 
-            System.out.println("Il giro " + giroTratta.getId() + " della tratta " +  giroTratta.getIdTratta().getNome() + " è stato salvato correttamente!");
-        }else {
+            System.out.println("Il giro " + giroTratta.getId() + " della tratta " + giroTratta.getIdTratta().getNome() + " è stato salvato correttamente!");
+        } else {
             System.err.println("Giro tratta non creato! Il Mezzo  " + giroTratta.getIdMezzo().getId() + " scelto per questo giro è in MANUTENZIONE!");
         }
 
@@ -52,9 +52,10 @@ public class GiroTrattaDAO {
 
         transaction.commit();
 
-        System.out.println("Il giro " + found.getId() + " della tratta " +  found.getIdTratta().getNome() + " è stato eliminato correttamente!");
+        System.out.println("Il giro " + found.getId() + " della tratta " + found.getIdTratta().getNome() + " è stato eliminato correttamente!");
 
     }
+
     public void findTempoEffettivo(String trattaId) {
         try {
             // Prova a creare la query e ad eseguirla
@@ -68,7 +69,7 @@ public class GiroTrattaDAO {
             } else {
                 for (GiroTratta giroTratta : risultati) {
                     Duration durata = Duration.between(giroTratta.getTempoPartenza(), giroTratta.getTempoArrivo());
-                    System.out.println("Durata per il giro tratta ID " + giroTratta.getId() + " del mezzo "+ giroTratta.getIdMezzo().getId() + " è di: " + durata.toMinutes() + " minuti");
+                    System.out.println("Durata per il giro tratta ID " + giroTratta.getId() + " del mezzo " + giroTratta.getIdMezzo().getId() + " è di: " + durata.toMinutes() + " minuti");
                 }
             }
         } catch (IllegalArgumentException e) {
@@ -81,10 +82,11 @@ public class GiroTrattaDAO {
             System.err.println("Errore imprevisto: " + e.getMessage());
         }
     }
-    public void findMediaTempoEffettivo(String trattaId , String mezzoId) {
+
+    public void findMediaTempoEffettivo(String trattaId, String mezzoId) {
         try {
 
-            TypedQuery<GiroTratta> query = em.createQuery("SELECT a FROM GiroTratta a WHERE a.idMezzo.id = :mezzoId AND a.idTratta = :trattaId", GiroTratta.class);
+            TypedQuery<GiroTratta> query = em.createQuery("SELECT a FROM GiroTratta a WHERE a.idMezzo.id = :mezzoId AND a.idTratta.id = :trattaId", GiroTratta.class);
             query.setParameter("mezzoId", UUID.fromString(mezzoId));
             query.setParameter("trattaId", UUID.fromString(trattaId));
 
@@ -101,7 +103,7 @@ public class GiroTrattaDAO {
 
                 long somma = tempiEffettivi.stream().mapToLong(Long::longValue).sum();
                 double media = (double) somma / tempiEffettivi.size();
-                System.out.println("La Media Tempo Effettivo del mezzo " + mezzoId + " sulla tratta " + trattaId +  " è " + media + " minuti.");
+                System.out.println("La Media Tempo Effettivo del mezzo " + mezzoId + " sulla tratta " + trattaId + " è " + media + " minuti.");
             }
         } catch (IllegalArgumentException e) {
             System.err.println("Errore: L'ID tratta fornito non è valido. Assicurati che sia un UUID corretto.");
@@ -111,7 +113,6 @@ public class GiroTrattaDAO {
             System.err.println("Errore imprevisto: " + e.getMessage());
         }
     }
-
 
 
     public List<GiroTratta> findGiriMezzo(Mezzo mezzo) {

@@ -66,7 +66,7 @@ public class Application {
 
 
         GiroTratta giro1tratta1 = new GiroTratta(mezzo1, tratta1, LocalDateTime.of(2024, 7, 12, 10, 30), LocalDateTime.of(2024, 7, 12, 11, 20));
-        // GiroTratta giro2tratta1 = new GiroTratta(md.findById("a80b7562-9554-4d81-b3f3-328f237dfaf9"), trd.findById("a75e415a-6b18-4b0f-a5c3-9b1fa839315b"), LocalDateTime.of(2024, 8, 22, 12, 0), LocalDateTime.of(2024, 8, 22, 12, 58));
+        GiroTratta giro2tratta1 = new GiroTratta(md.findById("0db1a909-1630-4c0c-993d-84e8f489afba"), trd.findById("3f2ce3aa-4117-4248-8d3a-cd68e6704f96"), LocalDateTime.of(2024, 8, 22, 12, 0), LocalDateTime.of(2024, 8, 22, 12, 58));
         GiroTratta giro3tratta1 = new GiroTratta(mezzo2, tratta1, LocalDateTime.of(2024, 8, 22, 12, 58), LocalDateTime.of(2024, 8, 22, 14, 1));
         GiroTratta giro4tratta1 = new GiroTratta(mezzo2, tratta1, LocalDateTime.of(2024, 8, 22, 14, 2), LocalDateTime.of(2024, 8, 22, 15, 5));
 
@@ -91,59 +91,16 @@ public class Application {
 //        trd.save(tratta1);
 //        trd.save(tratta2);
         //  smd.save(statoMezzo1);
-//       // smd.save(statoMezzo2);
+//        smd.save(statoMezzo2);
         //md.save(mezzo1);
-        // md.save(mezzo2);
+        //md.save(mezzo2);
 //        smd.save(statoMezzo2);
 //        gd.save(giro1tratta1);
-//        gd.save(giro2tratta1);
+        gd.save(giro2tratta1);
 //        gd.save(giro3tratta1);
 //        gd.save(giro4tratta1);
 //        timbd.save(timbratura1);
 //        timbd.save(timbratura2);
-
-
-//        System.out.println("*********************findAbbonamentiPerPuntoEmissione********************************");
-//        ad.findAbbonamentiPerPuntoEmissione(distributore1).forEach(System.out::println);
-//
-//        System.out.println("*********************findBigliettoPerPuntoEmissione********************************");
-//        bd.findBigliettoPerPuntoEmissione(distributore1).forEach(System.out::println);
-//
-//        System.out.println("*********************findAbbonamentiNelTempo********************************");
-//        ad.findAbbonamentiNelTempo(LocalDate.of(2024,6,12),LocalDate.of(2024,9,12)).forEach(System.out::println);
-//
-//        System.out.println("*********************findNumeroAbbonamentiNelTempo********************************");
-//        System.out.println( "Il numero di Abbonati del periodo richiesto è: " + ad.findNumeroAbbonamentiNelTempo(LocalDate.of(2024,6,12),LocalDate.of(2024,9,12)));
-//
-//        System.out.println("*********************findBigliettiNelTempo********************************");
-//        bd.findBigliettiNelTempo(LocalDate.of(2024,6,12),LocalDate.of(2024,9,12)).forEach(System.out::println);
-//
-//        System.out.println("*********************findNumeroBigliettiNelTempo********************************");
-//        System.out.println( "Il numero di Abbonati del periodo richiesto è: " + bd.findNumeroBigliettiNelTempo(LocalDate.of(2024,6,12),LocalDate.of(2024,9,12)));
-//
-//        System.out.println("*********************findValiditaAbbonamento********************************");
-//        ad.findValiditaAbbonamento(tesseraUtente2.getId().toString());
-//
-//        System.out.println("*********************findStatiMezzo********************************");
-//        smd.findStatiMezzo(md.findById("2279ba24-b8a6-48c3-b1b4-4c06fc52084a")).forEach(System.out::println);
-//
-//        System.out.println("*********************findTimbratureNelTempo********************************");
-//        timbd.findTimbratureNelTempo(LocalDateTime.of(2024,7,2,10,4),LocalDateTime.of(2024,9,12,15,15)).forEach(System.out::println);
-//
-//        System.out.println("*********************findTimbratureDiUnMezzo********************************");
-//        timbd.findTimbratureDiUnMezzo(mezzo2.getId().toString()).forEach(System.out::println);
-
-//        System.out.println("*********************findGiriMezzo********************************");
-//        gd.findGiriMezzo(md.findById("2279ba24-b8a6-48c3-b1b4-4c06fc52084a")).forEach(System.out::println);
-//
-//        System.out.println("*********************findNumeroGiriMezzo********************************");
-//        gd.findNumeroGiriMezzo(md.findById("2279ba24-b8a6-48c3-b1b4-4c06fc52084a"));
-//
-//        System.out.println("*********************findTempoEffettivo********************************");
-//        gd.findTempoEffettivo("a75e415a-6b18-4b0f-a5c3-9b1fa839315b");
-//
-//        System.out.println("*********************findMediaTempoEffettivo********************************");
-//        gd.findMediaTempoEffettivo("a75e415a-6b18-4b0f-a5c3-9b1fa839315b");
 
 
         trasportoPubblico:
@@ -254,7 +211,6 @@ public class Application {
                 if (password == 1234) {
                     System.out.println("Password CORRETTA. Accesso consentito.");
                     scegliOpzioneAdmin();
-
                 } else {
                     System.out.println("Password ERRATA. Accesso negato.");
                 }
@@ -277,7 +233,6 @@ public class Application {
             System.out.println("Premi 7 per Trovare i biglietti timbrati in un certo periodo");
             System.out.println("Premi 8 per Trovare i biglietti timbrati in un certo mezzo");
             System.out.println("Premi 9 per Trovare tutti i giri fatti da un mezzo");
-            //System.out.println("Premi 10 per Trovare il numero dei giri fatti da un mezzo");
             System.out.println("Premi 10 per trovare il tempo effettivo di percorrenza di un tratta da un determinato mezzo");
             System.out.println("Premi 11 per Trovare il tempo medio di percorrenza della tratta scelta");
             System.out.println("Premi 12 per Cambiare stato di attività distributori automatici");
@@ -288,40 +243,51 @@ public class Application {
             switch (sceltaAdmin) {
                 case 1:
                     scegliPuntoVenditaTrovaAbbon();
+                    esciContinuaAdmin();
                     break;
                 case 2:
                     scegliPuntoVenditaTrovaBiglietti();
+                    esciContinuaAdmin();
                     break;
                 case 3:
                     trovaAbbonamentiVendutiInPeriodo();
+                    esciContinuaAdmin();
                     break;
                 case 4:
                     trovaBigliettiVendutiInPeriodo();
+                    esciContinuaAdmin();
                     break;
                 case 5:
                     controllaValiditaAbbonam();
+                    esciContinuaAdmin();
                     break;
                 case 6:
                     controlloStatoAttivitaMezzo();
+                    esciContinuaAdmin();
                     break;
                 case 7:
                     trovaBigliettiTimbratiInPeriodo();
+                    esciContinuaAdmin();
                     break;
                 case 8:
                     trovaBigliettiTimbratiInUnMezzo();
+                    esciContinuaAdmin();
                     break;
                 case 9:
                     trovaGiriFattiDaUnMezzo();
+                    esciContinuaAdmin();
                     break;
                 case 10:
-                    // trovare il tempo effettivo di percorrenza di un tratta da un determinato mezzo
+                    trovaTempoEffDiUnaTratta();
+                    esciContinuaAdmin();
                     break;
                 case 11:
-                    // Trovare il tempo medio di percorrenza della tratta scelta
+                    trovaTempoMedioMezzoTratta();
+                    esciContinuaAdmin();
                     break;
                 case 12:
-                    // Cambiare stato di attività distributori automatici
                     cambiaStatoAttivitaDistributori();
+                    esciContinuaAdmin();
                     break;
 
                 default:
@@ -332,6 +298,29 @@ public class Application {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public static void esciContinuaAdmin() {
+
+        System.out.println("\n--> Scegli un opzione per proseguire: ");
+        System.out.println("Premi 1 per tornare al menu principale");
+        System.out.println("Premi 2 per Uscire dall'applicazione");
+
+        int sceltaAdmin = Integer.parseInt(scanner.nextLine());
+
+        esci:
+        switch (sceltaAdmin) {
+            case 1:
+                scegliOpzioneAdmin();
+                break;
+            case 2:
+                System.out.println("\nArrivederci e grazie");
+                scanner.close();
+                break esci;
+            default:
+                System.out.println("Seleziona correttamente un'opzione.");
+        }
+
     }
 
     // 1
@@ -423,13 +412,13 @@ public class Application {
             List<Tessera> tessere = tessere();
             System.out.println("\n--> Seleziona una Tessera per proseguire con il controllo: ");
             for (int i = 0; i < tessere.size(); i++) {
-                System.out.println("Premi " + (i + 1) + " per Tessera" + tessere.get(i).getId());
+                System.out.println("Premi " + (i + 1) + " per Tessera " + tessere.get(i).getId());
             }
             try {
                 int sceltaTessera = Integer.parseInt(scanner.nextLine()) - 1;
                 if (sceltaTessera > 0 && sceltaTessera < tessere.size()) {
                     Tessera tesseraScelta = tessere.get(sceltaTessera);
-                    ad.findValiditaAbbonamento(tesseraScelta.toString());
+                    ad.findValiditaAbbonamento(tesseraScelta.getId().toString());
                 } else {
                     System.out.println("Inserimento NON valido. Inserisci un numero intero.");
                 }
@@ -464,11 +453,11 @@ public class Application {
     public static void trovaBigliettiTimbratiInPeriodo() {
         try {
             System.out.println("\n--> Inserisci data di inizio periodo: ");
-            System.out.println("ATTENZIONE: FORMATO ---> AAAA-MM-GG");
+            System.out.println("ATTENZIONE: FORMATO ---> AAAA-MM-GGTHH:MM:SS");
             String dataInizio = scanner.nextLine();
             LocalDateTime dataInizioControllo = LocalDateTime.parse(dataInizio);
             System.out.println("\n--> Inserisci data di fine periodo: ");
-            System.out.println("ATTENZIONE: FORMATO ---> AAAA-MM-GG");
+            System.out.println("ATTENZIONE: FORMATO ---> AAAA-MM-GGTHH:MM:SS");
             String dataFine = scanner.nextLine();
             LocalDateTime dataFineControllo = LocalDateTime.parse(dataFine);
 
@@ -519,9 +508,29 @@ public class Application {
     }
 
     // 10
-    public static void trovaTempoEffDiUnMezzo() {
+    public static void trovaTempoEffDiUnaTratta() {
+        List<Tratta> tratte = tratte();
+        System.out.println("\n--> Seleziona la tratta per calcolare il tempo effettivo di percorrenza di ogni mezzo: ");
+        for (int i = 0; i < tratte.size(); i++) {
+            System.out.println("Premi " + (i + 1) + " per Tratta " + tratte.get(i).getNome());
+        }
+        try {
+            int sceltaTratta = Integer.parseInt(scanner.nextLine()) - 1;
+            if (sceltaTratta >= 0 && sceltaTratta < tratte.size()) {
+                Tratta trattaScelta = tratte.get(sceltaTratta);
+                gd.findTempoEffettivo(trattaScelta.getId().toString());
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
+
+    // 11
+    public static void trovaTempoMedioMezzoTratta() {
+
         List<Mezzo> mezzi = tuttiMezzi();
-        System.out.println("\n--> Seleziona il mezzo e la tratta per calcolare il tempo effettivo di percorrenza: ");
+        System.out.println("\n--> Seleziona un Mezzo per calcolare il tempo medio effettivo: ");
         for (int i = 0; i < mezzi.size(); i++) {
             System.out.println("Premi " + (i + 1) + " per Mezzo " + mezzi.get(i).getId());
         }
@@ -529,7 +538,10 @@ public class Application {
             int sceltaMezzo = Integer.parseInt(scanner.nextLine()) - 1;
             if (sceltaMezzo >= 0 && sceltaMezzo < mezzi.size()) {
                 Mezzo mezzoScelto = mezzi.get(sceltaMezzo);
-
+                //Tratta idTratta = mezzoScelto.getIdTratta();
+                gd.findMediaTempoEffettivo(mezzoScelto.getIdTratta().getId().toString(), mezzoScelto.getId().toString());
+            } else {
+                System.out.println("Errore: inserisci un numero valido.");
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -554,7 +566,6 @@ public class Application {
             System.out.println(e.getMessage());
         }
     }
-
 
     // gestione utente
     public static void gestioneUtente() {
@@ -657,9 +668,7 @@ public class Application {
         }
     }
 
-
     //gestione errori ok
-
     public static void acquistoBiglietti(Tessera tesseraID, PuntoEmissione puntoScelto) {
 
         try {
@@ -690,7 +699,6 @@ public class Application {
 
 
     }
-
 
     public static void acquistaAbbonamento(Tessera tesseraID, PuntoEmissione puntoScelto) {
         while (true) {
@@ -810,7 +818,6 @@ public class Application {
 
         return mezzoScelto;
     }
-
 
     public static Tessera gestioneNuovoUtente() {
         while (true) {
