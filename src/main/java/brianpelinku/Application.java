@@ -97,7 +97,7 @@ public class Application {
 //        md.save(mezzo2);
 //        smd.save(statoMezzo2);
 //        gd.save(giro1tratta1);
-      gd.save(giro2tratta1);
+//        gd.save(giro2tratta1);
 //        gd.save(giro3tratta1);
 //        gd.save(giro4tratta1);
 //        timbd.save(timbratura1);
@@ -118,6 +118,9 @@ public class Application {
 //
 //        System.out.println("*********************findBigliettiNelTempo********************************");
 //        bd.findBigliettiNelTempo(LocalDate.of(2024,6,12),LocalDate.of(2024,9,12)).forEach(System.out::println);
+//
+//        System.out.println("*********************findNumeroBigliettiNelTempo********************************");
+//        System.out.println( "Il numero di Abbonati del periodo richiesto è: " + bd.findNumeroBigliettiNelTempo(LocalDate.of(2024,6,12),LocalDate.of(2024,9,12)));
 //
 //        System.out.println("*********************findValiditaAbbonamento********************************");
 //        ad.findValiditaAbbonamento(tesseraUtente2.getId().toString());
@@ -187,7 +190,7 @@ public class Application {
         while (true) {
             try {
                 int num = Integer.parseInt(scanner.nextLine());
-                if (num >= 0 || num <= 2) {
+                if (num >= 0 && num <= 2) {
                     return num;
                 } else {
                     System.out.println("Scelta non valida. Inserire un numero tra 0 e 2.");

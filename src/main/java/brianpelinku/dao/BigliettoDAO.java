@@ -111,6 +111,17 @@ public class BigliettoDAO {
         return biglietti;
     }
 
+    public Integer findNumeroBigliettiNelTempo(LocalDate data1, LocalDate data2 ) {
+        TypedQuery<Biglietto> query = em.createQuery("SELECT a FROM Biglietto a WHERE a.dataEmissione >= :data1 AND a.dataEmissione <= :data2 ", Biglietto.class);
+        query.setParameter("data1", data1);
+        query.setParameter("data2", data2);
+
+        if (query.getResultList().isEmpty()) {
+            System.out.println("Non ci sono Abbonamenti in questo Periodo di tempo!");
+        }
+        return query.getResultList().size();
+    }
+
     public void updateTimbraturaBiglietto(String bigliettoId, boolean bool) {
     try {
     EntityTransaction transaction = em.getTransaction();
