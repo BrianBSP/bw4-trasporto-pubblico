@@ -77,7 +77,7 @@ public class GiroTratta {
     public String toString() {
         return "GiroTratta{" +
                 "id=" + id +
-                ", idMezzo=" + idMezzo.getTipo() +
+                ", Mezzo=" + idMezzo.getTipo() + ", idMezzo=" + idMezzo.getId() +
                 ", idTratta=" + idTratta.getNome() +
                 ", tempoPartenza=" + tempoPartenza +
                 ", tempoArrivo=" + tempoArrivo +

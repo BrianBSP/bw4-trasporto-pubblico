@@ -1,6 +1,5 @@
 package brianpelinku.dao;
 
-import brianpelinku.entities.PuntoEmissione;
 import brianpelinku.entities.Utente;
 import brianpelinku.exceptions.NotFoundException;
 import jakarta.persistence.EntityManager;

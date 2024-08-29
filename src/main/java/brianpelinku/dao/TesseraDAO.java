@@ -1,15 +1,10 @@
 package brianpelinku.dao;
 
-import brianpelinku.entities.Abbonamento;
-import brianpelinku.entities.PuntoEmissione;
 import brianpelinku.entities.Tessera;
-import brianpelinku.entities.Utente;
 import brianpelinku.exceptions.NotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.TypedQuery;
 
-import java.util.List;
 import java.util.UUID;
 
 public class TesseraDAO {
@@ -34,6 +29,7 @@ public class TesseraDAO {
         if (found == null) throw new NotFoundException(tesseraId);
         return found;
     }
+
     public void findByIdAndDelete(String tesseraId) {
         Tessera found = this.findById(tesseraId);
 
@@ -48,5 +44,23 @@ public class TesseraDAO {
         System.out.println("La tessera " + found.getId() + " è stata eliminata correttamente!");
     }
 
+    public void rinnovoValiditaTessera(String tesseraId) {
+        try {
+            EntityTransaction transaction = em.getTransaction();
+
+            transaction.begin();
+
+            em.createQuery("UPDATE Tessera a SET a.dataEmissione = LocalDate.now() WHERE a.id = :tesseraId")
+                    .setParameter("tesseraId", UUID.fromString(tesseraId)).executeUpdate();
+            ;
+
+            transaction.commit();
+
+            System.out.println("Rinnovo Validità Tessera avvenuto con successo!");
+        } catch (Exception e) {
+            System.err.println("Errore imprevisto: " + e.getMessage());
+        }
+
+    }
 
 }

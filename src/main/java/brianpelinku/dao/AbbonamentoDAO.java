@@ -72,14 +72,26 @@ public class AbbonamentoDAO {
     }
 
     public Integer findNumeroAbbonamentiNelTempo(LocalDate data1, LocalDate data2 ) {
-        TypedQuery<Abbonamento> query = em.createQuery("SELECT a FROM Abbonamento a WHERE a.dataEmissione >= :data1 AND a.dataEmissione <= :data2 ", Abbonamento.class);
-        query.setParameter("data1", data1);
-        query.setParameter("data2", data2);
+        try {
+            TypedQuery<Abbonamento> query = em.createQuery(
+                    "SELECT a FROM Abbonamento a WHERE a.dataEmissione >= :data1 AND a.dataEmissione <= :data2",
+                    Abbonamento.class
+            );
+            query.setParameter("data1", data1);
+            query.setParameter("data2", data2);
 
-        if (query.getResultList().isEmpty()) {
-            System.out.println("Non ci sono Abbonamenti in questo Periodo di tempo!");
+            List<Abbonamento> resultList = query.getResultList();
+
+            if (resultList.isEmpty()) {
+                System.out.println("Non ci sono Abbonamenti in questo periodo di tempo!");
+                return 0; // Restituisce 0 se non ci sono abbonamenti
+            }
+
+            return resultList.size();
+        } catch (Exception e) {
+            System.err.println("Si è verificato un errore durante l'esecuzione della query: " + e.getMessage());
+            return -1; // Restituisce -1 in caso di errore per indicare che qualcosa è andato storto
         }
-        return query.getResultList().size();
     }
 
 

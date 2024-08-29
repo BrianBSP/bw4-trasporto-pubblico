@@ -111,6 +111,26 @@ public class BigliettoDAO {
         return biglietti;
     }
 
+    public Integer findNumeroBigliettiNelTempo(LocalDate data1, LocalDate data2 ) {
+        try {
+        TypedQuery<Biglietto> query = em.createQuery("SELECT a FROM Biglietto a WHERE a.dataEmissione >= :data1 AND a.dataEmissione <= :data2 ", Biglietto.class);
+        query.setParameter("data1", data1);
+        query.setParameter("data2", data2);
+
+        List<Biglietto> resultList = query.getResultList();
+
+        if (resultList.isEmpty()) {
+            System.out.println("Non ci sono Biglietti in questo Periodo di tempo!");
+            return 0; // Restituisce 0 se non ci sono Biglietti
+        }
+        return  resultList.size();
+        }
+        catch (Exception e) {
+            System.err.println("Si è verificato un errore durante l'esecuzione della query: " + e.getMessage());
+            return -1; // Restituisce -1 in caso di errore per indicare che qualcosa è andato storto
+        }
+    }
+
     public void updateTimbraturaBiglietto(String bigliettoId, boolean bool) {
     try {
     EntityTransaction transaction = em.getTransaction();

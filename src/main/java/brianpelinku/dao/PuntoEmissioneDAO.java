@@ -1,5 +1,6 @@
 package brianpelinku.dao;
 
+import brianpelinku.ENUMS.StatoDistributore;
 import brianpelinku.entities.PuntoEmissione;
 import brianpelinku.exceptions.NotFoundException;
 import jakarta.persistence.EntityManager;
@@ -43,5 +44,24 @@ public class PuntoEmissioneDAO {
         transaction.commit();
 
         System.out.println("Il Punto Emissione " + found.getNome() + " è stato eliminato correttamente!");
+    }
+
+    public void updateStatoDistributore(String distributoreId, StatoDistributore statoDistributore) {
+        try {
+            EntityTransaction transaction = em.getTransaction();
+
+            transaction.begin();
+
+            em.createQuery("UPDATE PuntoEmissione a SET a.stato = :statoDistributore WHERE a.id = :distributoreId")
+                    .setParameter("distributoreId", UUID.fromString(distributoreId)).setParameter("statoDistributore", statoDistributore).executeUpdate();;
+
+            transaction.commit();
+
+            System.out.println("Cambio Stato distributore avvenuta con successo!");
+        }
+        catch  (Exception e) {
+            System.err.println("Errore imprevisto: " + e.getMessage());
+        }
+
     }
 }
