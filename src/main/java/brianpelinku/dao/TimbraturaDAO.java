@@ -24,20 +24,24 @@ public class TimbraturaDAO {
     public void save(Timbratura timbratura) {
         BigliettoDAO bd = new BigliettoDAO(em);
 
-        EntityTransaction transaction = em.getTransaction();
-        transaction.begin();
-        em.persist(timbratura);
-        transaction.commit();
-
+        //se il biglietto non è stato timbrato allora crea timbratura e cambia biglietto in timbrato
         if (!timbratura.getIdBiglietto().getTimbrato()) {
+            EntityTransaction transaction = em.getTransaction();
+            transaction.begin();
+            em.persist(timbratura);
+            transaction.commit();
+
             bd.updateTimbraturaBiglietto(timbratura.getIdBiglietto().getId().toString(),true);
             System.out.println("Timbratura biglietto " + timbratura.getIdBiglietto().getId() + " cambiato in true");
+
+            System.out.println("La timbratura " + timbratura.getId() + " è stata salvata correttamente!");
+
         } else {
             //bd.updateTimbraturaBiglietto(timbratura.getIdBiglietto().getId().toString(),false);
-            System.out.println("Il biglietto " + timbratura.getIdBiglietto().getId() + " è già stato timbrato!");
+            System.err.println("Il biglietto " + timbratura.getIdBiglietto().getId() + " è già stato timbrato!");
 
         }
-        System.out.println("La timbratura " + timbratura.getId() + " è stata salvata correttamente!");
+
     }
 
     public Timbratura findById(String timbraturaId) {

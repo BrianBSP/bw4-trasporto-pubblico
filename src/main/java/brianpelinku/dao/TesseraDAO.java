@@ -9,6 +9,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -48,5 +49,23 @@ public class TesseraDAO {
         System.out.println("La tessera " + found.getId() + " è stata eliminata correttamente!");
     }
 
+    public void rinnovoValiditaTessera(String tesseraId) {
+        try {
+            EntityTransaction transaction = em.getTransaction();
+
+            transaction.begin();
+
+            em.createQuery("UPDATE Tessera a SET a.dataEmissione = LocalDate.now() WHERE a.id = :tesseraId")
+                    .setParameter("tesseraId", UUID.fromString(tesseraId)).executeUpdate();;
+
+            transaction.commit();
+
+            System.out.println("Rinnovo Validità Tessera avvenuto con successo!");
+        }
+        catch  (Exception e) {
+            System.err.println("Errore imprevisto: " + e.getMessage());
+        }
+
+    }
 
 }
