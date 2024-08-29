@@ -1,10 +1,7 @@
 package brianpelinku.dao;
 
 import brianpelinku.ENUMS.StatoDelMezzo;
-import brianpelinku.entities.Abbonamento;
-import brianpelinku.entities.GiroTratta;
-import brianpelinku.entities.Mezzo;
-import brianpelinku.entities.StatoMezzo;
+import brianpelinku.entities.*;
 import brianpelinku.exceptions.NotFoundException;
 import jakarta.persistence.*;
 
@@ -71,7 +68,7 @@ public class GiroTrattaDAO {
             } else {
                 for (GiroTratta giroTratta : risultati) {
                     Duration durata = Duration.between(giroTratta.getTempoPartenza(), giroTratta.getTempoArrivo());
-                    System.out.println("Durata per il giro tratta ID " + giroTratta.getId() + ": " + durata.toMinutes() + " minuti");
+                    System.out.println("Durata per il giro tratta ID " + giroTratta.getId() + " del mezzo "+ giroTratta.getIdMezzo().getId() + " è di: " + durata.toMinutes() + " minuti");
                 }
             }
         } catch (IllegalArgumentException e) {
@@ -84,16 +81,18 @@ public class GiroTrattaDAO {
             System.err.println("Errore imprevisto: " + e.getMessage());
         }
     }
-    public void findMediaTempoEffettivo(String trattaId) {
+    public void findMediaTempoEffettivo(String trattaId , String mezzoId) {
         try {
-            TypedQuery<GiroTratta> query = em.createQuery("SELECT a FROM GiroTratta a WHERE a.idTratta.id = :trattaId", GiroTratta.class);
+
+            TypedQuery<GiroTratta> query = em.createQuery("SELECT a FROM GiroTratta a WHERE a.idMezzo.id = :mezzoId AND a.idTratta = :trattaId", GiroTratta.class);
+            query.setParameter("mezzoId", UUID.fromString(mezzoId));
             query.setParameter("trattaId", UUID.fromString(trattaId));
 
             List<GiroTratta> risultati = query.getResultList();
             List<Long> tempiEffettivi = new ArrayList<>(risultati.size());
 
             if (risultati.isEmpty()) {
-                System.out.println("Nessun risultato trovato per l'ID tratta: " + trattaId);
+                System.out.println("Nessun risultato trovato per l'ID mezzo: " + mezzoId);
             } else {
                 for (GiroTratta giroTratta : risultati) {
                     Duration durata = Duration.between(giroTratta.getTempoPartenza(), giroTratta.getTempoArrivo());
@@ -102,7 +101,7 @@ public class GiroTrattaDAO {
 
                 long somma = tempiEffettivi.stream().mapToLong(Long::longValue).sum();
                 double media = (double) somma / tempiEffettivi.size();
-                System.out.println("La Media Tempo Effettivo della tratta " + trattaId + " è " + media + " minuti.");
+                System.out.println("La Media Tempo Effettivo del mezzo " + mezzoId + " sulla tratta " + trattaId +  " è " + media + " minuti.");
             }
         } catch (IllegalArgumentException e) {
             System.err.println("Errore: L'ID tratta fornito non è valido. Assicurati che sia un UUID corretto.");

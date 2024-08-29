@@ -4,7 +4,6 @@ import brianpelinku.ENUMS.*;
 import brianpelinku.dao.*;
 import brianpelinku.entities.*;
 import brianpelinku.exceptions.InputErratoExceptions;
-import brianpelinku.exceptions.NotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -60,8 +59,8 @@ public class Application {
         Tratta tratta2 = new Tratta("tratta2", "partenza2", "capolinea2", 60);
 
 
-        Mezzo mezzo1 = new Mezzo(TipoMezzo.TRAM, 100, StatoDelMezzo.SERVIZIO, trd.findById("3f2ce3aa-4117-4248-8d3a-cd68e6704f96"));
-        Mezzo mezzo2 = new Mezzo(TipoMezzo.AUTOBUS, 40, StatoDelMezzo.SERVIZIO, trd.findById("4f702139-88da-44b7-9921-1c32c58ed534"));
+        Mezzo mezzo1 = new Mezzo(TipoMezzo.TRAM, 100, StatoDelMezzo.SERVIZIO, trd.findById("5932bf7f-2508-4ffe-9871-11bbf830d9a0"));
+        Mezzo mezzo2 = new Mezzo(TipoMezzo.AUTOBUS, 40, StatoDelMezzo.SERVIZIO, trd.findById("a75e415a-6b18-4b0f-a5c3-9b1fa839315b"));
 
         // StatoMezzo statoMezzo1 = new StatoMezzo(LocalDate.now(), StatoDelMezzo.SERVIZIO, md.findById("2279ba24-b8a6-48c3-b1b4-4c06fc52084a"));
 
@@ -558,86 +557,140 @@ public class Application {
 
 
     // gestione utente
+    public static void gestioneUtente() {
+        while (true) {
+            System.out.println("Premi 1 per ACCEDERE e PROCEDI all'acquisto.");
+            System.out.println("Premi 2 per REGISTRARTI");
+            int sceltaUtente = Integer.parseInt(scanner.nextLine());
+            switch (sceltaUtente) {
+                case 1:
+                    gestioneUtenteRegistrato();
+
+                    break;
+                case 2:
+                    Tessera tesseraUtente = gestioneNuovoUtente();
+                    break;
+                default:
+                    System.out.println("Inserire un numero intero tra 1 e 2.");
+            }
+        }
+    }
+
+    //gestione errori ok
     public static void gestioneUtenteRegistrato() {
         while (true) {
             try {
-                System.out.println("Inserisci il tuo ID Tessera: ");
-                UUID tesseraID = UUID.fromString(scanner.nextLine());
-                Tessera tessera = td.findById(String.valueOf(tesseraID));
-
-                if (tessera != null) {
-                    List<PuntoEmissione> puntiVendita = puntiVendita();
-                    System.out.println("\n--> Scegli un punto vendita.");
-                    for (int i = 0; i < puntiVendita.size(); i++) {
-                        System.out.println("Premi " + (i + 1) + " per " + puntiVendita.get(i).getNome());
-                    }
+                UUID tesseraID = null;
+                while (tesseraID == null) {
 
                     try {
-                        int sceltaPuntoEmis = Integer.parseInt(scanner.nextLine()) - 1;
-                        if (sceltaPuntoEmis >= 0 && sceltaPuntoEmis < puntiVendita.size()) {
-                            PuntoEmissione puntoScelto = puntiVendita.get(sceltaPuntoEmis);
-                            System.out.println("Hai scelto il punto vendita " + puntoScelto.getNome());
-                            System.out.println("\n--> Scegli un opzione per proseguire.");
-                            System.out.println("Premi 1 se vuoi comprare uno o più biglietti");
-                            System.out.println("Premi 2 se vuoi comprare un abbonamento");
-                            int scelta = Integer.parseInt(scanner.nextLine());
-                            switch (scelta) {
-                                case 1:
-                                    // acquisto biglietti
-                                    acquistoBiglietti(tessera, puntoScelto);
-                                    break;
-                                case 2:
-                                    // acquisto abbonamento
-                                    acquistaAbbonamento(tessera, puntoScelto);
-                                    break;
-                                default:
-                                    System.out.println("Inserire un numero intero tra 1 e 2.");
-                                    break;
-                            }
-                        } else {
-                            System.out.println("Scelta NON valida. Inserire un numero tra 1 e " + puntiVendita.size());
-                            scanner.nextLine();
-                        }
-                    } catch (InputErratoExceptions e) {
-                        System.out.println(e.getMessage());
+                        System.out.println("Inserisci il tuo ID Tessera: ");
+                        String inputTesseraID = scanner.nextLine();
+                        tesseraID = UUID.fromString(inputTesseraID);
+                    } catch (IllegalArgumentException e) {
+                        System.err.println("ID Tessera non valido. Assicurati di inserire un UUID corretto.");
                     }
-
-
-                } else {
-                    System.out.println("Tessera NON trovata.");
                 }
 
-            } catch (NotFoundException e) {
-                System.out.println(e.getMessage());
-                scanner.nextLine();
+                Tessera tessera = td.findById(String.valueOf(tesseraID));
+
+                sceltaPuntoEmissioneEOperazione(tessera);
+
+            } catch (Exception e) {
+                System.err.println("Si è verificato un errore: " + e.getMessage());
             }
             break;
         }
     }
+
+    //gestione errori ok
+    public static void sceltaPuntoEmissioneEOperazione(Tessera tessera) {
+        if (tessera != null) {
+            List<PuntoEmissione> puntiVendita = puntiVendita();
+            System.out.println("\n--> Scegli un punto vendita.");
+            for (int i = 0; i < puntiVendita.size(); i++) {
+                System.out.println("Premi " + (i + 1) + " per " + puntiVendita.get(i).getNome());
+            }
+
+            PuntoEmissione puntoScelto = null;
+            while (puntoScelto == null) {
+                try {
+                    int sceltaPuntoEmis = Integer.parseInt(scanner.nextLine()) - 1;
+                    if (sceltaPuntoEmis >= 0 && sceltaPuntoEmis < puntiVendita.size()) {
+                        puntoScelto = puntiVendita.get(sceltaPuntoEmis);
+                        System.out.println("Hai scelto il punto vendita " + puntoScelto.getNome());
+                    } else {
+                        System.out.println("Scelta NON valida. Inserire un numero tra 1 e " + puntiVendita.size());
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Input non valido. Inserisci un numero intero valido.");
+                }
+            }
+
+            int scelta = -1;
+            while (scelta != 1 && scelta != 2) {
+
+                try {
+                    System.out.println("\n--> Scegli un'opzione per proseguire.");
+                    System.out.println("Premi 1 se vuoi comprare uno o più biglietti");
+                    System.out.println("Premi 2 se vuoi comprare un abbonamento");
+                    scelta = Integer.parseInt(scanner.nextLine());
+                    switch (scelta) {
+                        case 1:
+                            acquistoBiglietti(tessera, puntoScelto);
+                            break;
+                        case 2:
+                            acquistaAbbonamento(tessera, puntoScelto);
+                            break;
+                        default:
+                            System.out.println("Scelta NON valida. Inserire un numero intero tra 1 e 2.");
+                            scelta = -1; // Reset scelta per rimanere nel ciclo
+                            break;
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Input non valido. Inserisci un numero intero valido.");
+                }
+            }
+
+        } else {
+            System.out.println("Tessera NON trovata.");
+        }
+    }
+
+
+    //gestione errori ok
 
     public static void acquistoBiglietti(Tessera tesseraID, PuntoEmissione puntoScelto) {
-        while (true) {
-            try {
-                System.out.println("Quanti biglietti vuoi comprare?");
-                int num = Integer.parseInt(scanner.nextLine());
-                for (int i = 0; i < num; i++) {
-                    Biglietto biglietto = new Biglietto(LocalDate.now(), 90, false, tesseraID, puntoScelto);
-                    bd.save(biglietto);
-                    System.out.println("Biglietto " + (i + 1) + " creato: " + biglietto);
+
+        try {
+            int num = 0;
+            while (num <= 0) {
+                try {
+                    System.out.println("Quanti biglietti vuoi comprare?");
+                    num = Integer.parseInt(scanner.nextLine());
+                    if (num <= 0) {
+                        System.err.println("Il numero di biglietti deve essere un intero positivo.");
+                    }
+                } catch (NumberFormatException e) {
+                    System.err.println("Input NON valido. Inserire un numero intero.");
                 }
-                Tratta trattaScelta = scegliTratta(tesseraID);
-
-
-            } catch (NumberFormatException e) {
-                System.out.println("Input NON valido. Inserire un numero intero.");
-                scanner.nextLine();
-            } catch (InputErratoExceptions e) {
-                System.out.println(e.getMessage());
-                scanner.nextLine();
             }
-            break;
+
+            for (int i = 0; i < num; i++) {
+                Biglietto biglietto = new Biglietto(LocalDate.now(), 90, false, tesseraID, puntoScelto);
+                bd.save(biglietto);
+                System.out.println("Biglietto " + (i + 1) + " creato: " + biglietto);
+            }
+
+            Tratta trattaScelta = scegliTratta(tesseraID);
+
+        } catch (InputErratoExceptions e) {
+            System.err.println(e.getMessage());
         }
+
+
     }
+
 
     public static void acquistaAbbonamento(Tessera tesseraID, PuntoEmissione puntoScelto) {
         while (true) {
@@ -681,85 +734,83 @@ public class Application {
 
     }
 
+    //gestione errori ok
     public static Tratta scegliTratta(Tessera tesseraID) {
+
         Tratta trattoScelto = null;
-        try {
-            System.out.println("\n--> Scegli la tratta: ");
-            List<Tratta> tratte = tratte();
-            for (int i = 0; i < tratte().size(); i++) {
-                System.out.println("Premi " + (i + 1) + " per " + tratte().get(i).getNome());
-            }
 
-            // scegli tratta
-            int scegliTratta = Integer.parseInt(scanner.nextLine()) - 1;
-            if (scegliTratta >= 0 && scegliTratta < tratte().size()) {
-                trattoScelto = tratte.get(scegliTratta);
-                System.out.println("Hai scelto la tratta " + trattoScelto.getNome() + " \n");
-                Mezzo mezzoScelto = scegliMezzo(trattoScelto);
-                Biglietto bigliettoScelto = scegliBiglietto(tesseraID);
-                // timbratura
-                timbraBiglietto(mezzoScelto, bigliettoScelto);
-            }
+        while (true) {
+            try {
+                System.out.println("\n--> Scegli la tratta: ");
+                List<Tratta> tratte = tratte();
+                for (int i = 0; i < tratte.size(); i++) {
+                    System.out.println("Premi " + (i + 1) + " per " + tratte.get(i).getNome());
+                }
 
-        } catch (NumberFormatException e) {
-            System.out.println("Input non valido. Inserire un numero intero.");
-        } catch (Exception e) {
-            System.out.println("Errore durante la scelta della tratta: " + e.getMessage());
+                // Scegli tratta
+                int scegliTratta = Integer.parseInt(scanner.nextLine()) - 1;
+                if (scegliTratta >= 0 && scegliTratta < tratte.size()) {
+                    trattoScelto = tratte.get(scegliTratta);
+                    System.out.println("Hai scelto la tratta " + trattoScelto.getNome() + " \n");
+                    Mezzo mezzoScelto = scegliMezzo(trattoScelto);
+                    Biglietto bigliettoScelto = scegliBiglietto(tesseraID);
+                    // Timbratura
+                    timbraBiglietto(mezzoScelto, bigliettoScelto);
+                    break; // Esci dal ciclo dopo una selezione valida
+                } else {
+                    System.err.println("Scelta NON valida. Inserire un numero tra 1 e " + tratte.size());
+                }
+
+            } catch (NumberFormatException e) {
+                System.err.println("Input non valido. Inserire un numero intero.");
+            } catch (Exception e) {
+                System.err.println("Errore durante la scelta della tratta: " + e.getMessage());
+            }
         }
 
         return trattoScelto;
     }
 
+    //gestione errori ok
     public static Mezzo scegliMezzo(Tratta tratta) {
-        // scegli mezzo
-
         Mezzo mezzoScelto = null;
-        try {
-            System.out.println("\n--> Scegli il mezzo per questa tratta: " + tratta.getNome());
-            List<Mezzo> mezzi = mezzi(tratta);
-            for (int i = 0; i < mezzi.size(); i++) {
-                System.out.println("Premi " + (i + 1) + " per " + mezzi.get(i).getTipo());
-            }
-            int scegliMezzo = Integer.parseInt(scanner.nextLine()) - 1;
-            if (scegliMezzo >= 0 && scegliMezzo < mezzi.size()) {
-                mezzoScelto = mezzi.get(scegliMezzo);
-                System.out.println("Hai scelto il mezzo: " + mezzoScelto.getTipo());
 
-            } else {
-                System.out.println("Scelta NON valida. Riprova.");
-                scanner.nextLine();
+        while (mezzoScelto == null) {
+            try {
+                System.out.println("\n--> Scegli il mezzo per questa tratta: " + tratta.getNome());
+                List<Mezzo> mezzi = mezzi(tratta);
+
+                // Controlla se ci sono mezzi disponibili
+                if (mezzi.isEmpty()) {
+                    System.out.println("Nessun mezzo disponibile per questa tratta.");
+                    return null; // Torna se non ci sono mezzi disponibili
+                }
+
+                // Mostra le opzioni di mezzo
+                for (int i = 0; i < mezzi.size(); i++) {
+                    System.out.println("Premi " + (i + 1) + " per " + mezzi.get(i).getTipo());
+                }
+
+                // Scegli mezzo
+                int sceltaMezzo = Integer.parseInt(scanner.nextLine()) - 1;
+                if (sceltaMezzo >= 0 && sceltaMezzo < mezzi.size()) {
+                    mezzoScelto = mezzi.get(sceltaMezzo);
+                    System.out.println("Hai scelto il mezzo: " + mezzoScelto.getTipo());
+                    break; // Esci dal ciclo dopo una scelta valida
+                } else {
+                    System.out.println("Scelta NON valida. Inserisci un numero tra 1 e " + mezzi.size() + ".");
+                }
+
+            } catch (NumberFormatException e) {
+                System.out.println("Input non valido. Inserire un numero intero.");
+            } catch (Exception e) {
+                System.out.println("Errore durante la selezione del mezzo: " + e.getMessage());
             }
-        } catch (NumberFormatException e) {
-            System.out.println("Input non valido. Inserire un numero intero.");
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
         }
 
         return mezzoScelto;
     }
 
-    public static void gestioneUtente() {
-        while (true) {
-            System.out.println("Premi 1 per ACCEDERE e PROCEDI all'acquisto.");
-            System.out.println("Premi 2 per REGISTRARTI");
-            int sceltaUtente = Integer.parseInt(scanner.nextLine());
-            switch (sceltaUtente) {
-                case 1:
-                    gestioneUtenteRegistrato();
-
-                    break;
-                case 2:
-                    Tessera tesseraUtente = gestioneNuovoUtente();
-
-                    break;
-                default:
-                    System.out.println("Inserire un numero intero tra 1 e 2.");
-                    break;
-            }
-            break;
-
-        }
-    }
 
     public static Tessera gestioneNuovoUtente() {
         while (true) {
@@ -787,110 +838,102 @@ public class Application {
         return tesseraUtenteLoggato;
     }
 
+    //gestione errori ok
     public static Biglietto scegliBiglietto(Tessera tesseraID) {
         Biglietto bigliettoScelto = null;
-        try {
-            System.out.println("\n--> Scegli il biglietto che vuoi timbrare: ");
-            for (int i = 0; i < bigliettiUtente(tesseraID).size(); i++) {
-                System.out.println("Premi " + (i + 1) + " per " + bigliettiUtente(tesseraID).get(i).getId());
+        while (true) {
+            try {
+                System.out.println("\n--> Scegli il biglietto che vuoi timbrare: ");
+                for (int i = 0; i < bigliettiUtente(tesseraID).size(); i++) {
+                    System.out.println("Premi " + (i + 1) + " per " + bigliettiUtente(tesseraID).get(i).getId() + " -  biglietto già timbrato? " + bigliettiUtente(tesseraID).get(i).getTimbrato());
+                }
+                // scegli biglietto
+                int scegliBiglietto = Integer.parseInt(scanner.nextLine()) - 1;
+                if (scegliBiglietto >= 0 && scegliBiglietto < bigliettiUtente(tesseraID).size()) {
+                    bigliettoScelto = bigliettiUtente(tesseraID).get(scegliBiglietto);
+                    System.out.println("Hai scelto il biglietto " + bigliettoScelto.getId());
+                    break;
+                } else {
+                    System.err.println("Scelta NON valida. Riprova.");
+                }
+            } catch (NumberFormatException e) {
+                System.err.println("Input non valido. Inserire un numero intero.");
+            } catch (Exception e) {
+                System.err.println("Errore durante la scelta del biglietto: " + e.getMessage());
             }
-            // scegli biglietto
-            int scegliBiglietto = Integer.parseInt(scanner.nextLine()) - 1;
-            if (scegliBiglietto >= 0 && scegliBiglietto < bigliettiUtente(tesseraID).size()) {
-                bigliettoScelto = bigliettiUtente(tesseraID).get(scegliBiglietto);
-                System.out.println("Hai scelto il biglietto " + bigliettoScelto.getId());
-            } else {
-                System.out.println("Scelta NON valida. Riprova.");
-                scanner.nextLine();
-            }
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
         }
+
         return bigliettoScelto;
     }
 
+    //gestione errori ok
     public static void timbraBiglietto(Mezzo mezzo, Biglietto biglietto) {
+        boolean timbratoCorrettamente = false;
 
-        try {
-            Timbratura timbratura = new Timbratura(LocalDateTime.now(), mezzo, biglietto);
-            timbd.save(timbratura);
-            System.out.println("Il biglietto " + biglietto.getId() + " é stato timbrato correttamente.");
-            esciContinua(biglietto.getIdTessera());
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-
-
-    }
-
-    public static void esciContinua(Tessera tesseraID) {
-        try {
-            System.out.println("\n--> Scegli opzione");
-            System.out.println("Premi 0 per USCIRE");
-            System.out.println("Premi 1 se vuoi continuare ad acquistare.");
-            int sceltaOpzione = Integer.parseInt(scanner.nextLine());
-            esci:
-            switch (sceltaOpzione) {
-                case 1:
-                    continuaAdAcquistare(tesseraID);
-                    break;
-                case 0:
-                    System.out.println("\nGrazie per averci scelto! \nA presto!");
-                    scanner.close();
-                    break esci;
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    public static void continuaAdAcquistare(Tessera tesseraID) {
-        if (tesseraID != null) {
-            List<PuntoEmissione> puntiVendita = puntiVendita();
-            System.out.println("\n--> Scegli un punto vendita.");
-
-            for (int i = 0; i < puntiVendita.size(); i++) {
-                System.out.println("Premi " + (i + 1) + " per " + puntiVendita.get(i).getNome());
-            }
-
+        while (!timbratoCorrettamente) {
             try {
-                int sceltaPuntoEmis = Integer.parseInt(scanner.nextLine()) - 1;
-                if (sceltaPuntoEmis >= 0 && sceltaPuntoEmis < puntiVendita.size()) {
-                    PuntoEmissione puntoScelto = puntiVendita.get(sceltaPuntoEmis);
-                    System.out.println("Hai scelto il punto vendita " + puntoScelto.getNome());
-                    System.out.println("\n--> Scegli un opzione per proseguire.");
-                    System.out.println("Premi 1 se vuoi comprare uno o più biglietti");
-                    System.out.println("Premi 2 se vuoi comprare un abbonamento");
-                    int scelta = Integer.parseInt(scanner.nextLine());
-                    switch (scelta) {
-                        case 1:
-                            // acquisto biglietti
-                            acquistoBiglietti(tesseraID, puntoScelto);
-                            break;
-                        case 2:
-                            // acquisto abbonamento
-                            acquistaAbbonamento(tesseraID, puntoScelto);
-                            break;
-                        default:
-                            System.out.println("Inserire un numero intero tra 1 e 2.");
-                            break;
-                    }
+                if (biglietto.getTimbrato()) {
+                    // throw new Error("Il biglietto scelto è gia stato timbrato!") ;
+                    System.err.println("Il biglietto scelto è gia stato timbrato!");
+
+                    System.out.println("Scegli un altro biglietto non timbrato!");
+                    biglietto = scegliBiglietto(biglietto.getIdTessera());  // Cambia biglietto
                 } else {
-                    System.out.println("Scelta NON valida. Inserire un numero tra 1 e " + puntiVendita.size());
-                    scanner.nextLine();
+                    Timbratura timbratura = new Timbratura(LocalDateTime.now(), mezzo, biglietto);
+                    timbd.save(timbratura);
+                    esciContinua(biglietto.getIdTessera());
+                    timbratoCorrettamente = true;  // Uscire dal ciclo dopo una timbratura riuscita
                 }
-            } catch (InputErratoExceptions e) {
-                System.out.println(e.getMessage());
+
+
+            } catch (Exception e) {
+                System.err.println("Errore durante la timbratura: " + e.getMessage());
+                System.out.println("Vuoi riprovare con un altro biglietto? (s/n)");
+
+                String risposta = scanner.nextLine().trim().toLowerCase();
+                if (risposta.equals("s")) {
+                    biglietto = scegliBiglietto(biglietto.getIdTessera());  // Cambia biglietto
+                } else {
+                    System.err.println("Operazione annullata. Il biglietto non è stato timbrato.");
+                    break;  // Esce dal ciclo senza riprovare
+                }
             }
-
-
-        } else {
-            System.out.println("Tessera NON trovata.");
         }
-
     }
+
+    //gestione errori ok
+    public static void esciContinua(Tessera tesseraID) {
+        boolean sceltaValida = false;
+
+        while (!sceltaValida) {
+            try {
+                System.out.println("\n--> Scegli opzione:");
+                System.out.println("Premi 0 per USCIRE");
+                System.out.println("Premi 1 se vuoi continuare ad acquistare.");
+                int sceltaOpzione = Integer.parseInt(scanner.nextLine());
+
+                switch (sceltaOpzione) {
+                    case 1:
+                        sceltaPuntoEmissioneEOperazione(tesseraID);
+                        sceltaValida = true; // Esci dal ciclo dopo una scelta valida
+                        break;
+                    case 0:
+                        System.out.println("\nGrazie per averci scelto! \nA presto!");
+                        scanner.close();
+                        System.exit(0); // Termina l'applicazione
+                        break;
+                    default:
+                        System.err.println("Opzione NON valida. Inserisci 0 per uscire o 1 per continuare.");
+                        break;
+                }
+            } catch (NumberFormatException e) {
+                System.err.println("Input non valido. Inserire un numero intero.");
+            } catch (Exception e) {
+                System.err.println("Si è verificato un errore: " + e.getMessage());
+            }
+        }
+    }
+
 }
 
 
