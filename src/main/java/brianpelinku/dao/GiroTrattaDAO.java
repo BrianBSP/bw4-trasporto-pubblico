@@ -1,5 +1,6 @@
 package brianpelinku.dao;
 
+import brianpelinku.ENUMS.StatoDelMezzo;
 import brianpelinku.entities.Abbonamento;
 import brianpelinku.entities.GiroTratta;
 import brianpelinku.entities.Mezzo;
@@ -23,12 +24,18 @@ public class GiroTrattaDAO {
 
     public void save(GiroTratta giroTratta) {
 
-        EntityTransaction transaction = em.getTransaction();
-        transaction.begin();
-        em.persist(giroTratta);
-        transaction.commit();
+        if (giroTratta.getIdMezzo().getStato() == StatoDelMezzo.SERVIZIO) {
 
-        System.out.println("Il giro " + giroTratta.getId() + " della tratta " +  giroTratta.getIdTratta().getNome() + " è stato salvato correttamente!");
+            EntityTransaction transaction = em.getTransaction();
+            transaction.begin();
+            em.persist(giroTratta);
+            transaction.commit();
+
+            System.out.println("Il giro " + giroTratta.getId() + " della tratta " +  giroTratta.getIdTratta().getNome() + " è stato salvato correttamente!");
+        }else {
+            System.err.println("Giro tratta non creato! Il Mezzo  " + giroTratta.getIdMezzo().getId() + " scelto per questo giro è in MANUTENZIONE!");
+        }
+
     }
 
     public GiroTratta findById(String giroTrattaId) {
