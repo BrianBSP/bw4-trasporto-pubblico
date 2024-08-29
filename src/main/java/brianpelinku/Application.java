@@ -59,8 +59,8 @@ public class Application {
         Tratta tratta2 = new Tratta("tratta2", "partenza2", "capolinea2", 60);
 
 
-        Mezzo mezzo1 = new Mezzo(TipoMezzo.TRAM, 100, StatoDelMezzo.SERVIZIO, trd.findById("5932bf7f-2508-4ffe-9871-11bbf830d9a0"));
-        Mezzo mezzo2 = new Mezzo(TipoMezzo.AUTOBUS, 40, StatoDelMezzo.SERVIZIO, trd.findById("a75e415a-6b18-4b0f-a5c3-9b1fa839315b"));
+        Mezzo mezzo1 = new Mezzo(TipoMezzo.TRAM, 100, StatoDelMezzo.SERVIZIO, trd.findById("3f2ce3aa-4117-4248-8d3a-cd68e6704f96"));
+        Mezzo mezzo2 = new Mezzo(TipoMezzo.AUTOBUS, 40, StatoDelMezzo.SERVIZIO, trd.findById("4f702139-88da-44b7-9921-1c32c58ed534"));
 
         // StatoMezzo statoMezzo1 = new StatoMezzo(LocalDate.now(), StatoDelMezzo.SERVIZIO, md.findById("2279ba24-b8a6-48c3-b1b4-4c06fc52084a"));
 
