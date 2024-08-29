@@ -221,15 +221,20 @@ public class Application {
             System.out.println("Premi 1 per Trovare abbonamenti venduti per ogni punto vendita");
             System.out.println("Premi 2 per Trovare biglietti venduti per ogni punto vendita");
             System.out.println("Premi 3 per Trovare abbonamenti venduti in un certo periodo");
-            System.out.println("Premi 4 per Trovare biglietti venduti in un certo periodo");
-            System.out.println("Premi 5 per Controllare tipo di validità dell'abbonamento");
-            System.out.println("Premi 6 per Controllare lo stato di attività dei mezzi");
-            System.out.println("Premi 7 per Trovare i biglietti timbrati in un certo periodo");
-            System.out.println("Premi 8 per Trovare i biglietti timbrati in un certo mezzo");
-            System.out.println("Premi 9 per Trovare tutti i giri fatti da un mezzo");
-            System.out.println("Premi 10 per Trovare il numero dei giri fatti da un mezzo");
-            System.out.println("Premi 11 per trovare il tempo effettivo di percorrenza di un tratta da un determinato mezzo");
-            System.out.println("Premi 12 per Trovare il tempo medio di percorrenza della tratta scelta");
+            System.out.println("Premi 4 per Trovare  il numero degli abbonamenti venduti in un certo periodo");
+
+            System.out.println("Premi 5 per Trovare biglietti venduti in un certo periodo");
+            System.out.println("Premi 6 per Trovare il numero di biglietti venduti in un certo periodo");
+
+
+            System.out.println("Premi 7 per Controllare tipo di validità dell'abbonamento");
+            System.out.println("Premi 8 per Controllare lo stato di attività dei mezzi");
+            System.out.println("Premi 9 per Trovare i biglietti timbrati in un certo periodo");
+            System.out.println("Premi 10 per Trovare i biglietti timbrati in un certo mezzo");
+            System.out.println("Premi 11 per Trovare tutti i giri fatti da un mezzo");
+            System.out.println("Premi 12 per Trovare il numero dei giri fatti da un mezzo");
+            System.out.println("Premi 13 per trovare il tempo effettivo di percorrenza di un tratta da un determinato mezzo");
+            System.out.println("Premi 14 per Trovare il tempo medio di percorrenza della tratta scelta");
             System.out.println("Premi 0 per USCIRE");
 
             int sceltaAdmin = Integer.parseInt(scanner.nextLine());
@@ -245,6 +250,12 @@ public class Application {
 
                     break;
                 case 4:
+                    break;
+                case 5:
+                    trovaBigliettiVendutiInPeriodo();
+                    break;
+                default:
+                    System.out.println("Scegli correttamente un opzione per proseguire.");
                     break;
             }
 
@@ -289,15 +300,20 @@ public class Application {
     }
 
     public static void trovaBigliettiVendutiInPeriodo() {
-        System.out.println("Inserisci data di inizio periodo: ");
-        String dataInizio = scanner.nextLine();
-        LocalDate dataInizioControllo = LocalDate.parse(dataInizio);
+        try {
+            System.out.println("Inserisci data di inizio periodo: ");
+            String dataInizio = scanner.nextLine();
+            LocalDate dataInizioControllo = LocalDate.parse(dataInizio);
 
-        System.out.println("Inserisci data di fine periodo: ");
-        String dataFine = scanner.nextLine();
-        LocalDate dataFineControllo = LocalDate.parse(dataFine);
+            System.out.println("Inserisci data di fine periodo: ");
+            String dataFine = scanner.nextLine();
+            LocalDate dataFineControllo = LocalDate.parse(dataFine);
 
-        bd.findBigliettiNelTempo(dataInizioControllo, dataFineControllo).forEach(System.out::println);
+            bd.findBigliettiNelTempo(dataInizioControllo, dataFineControllo).forEach(System.out::println);
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
 
