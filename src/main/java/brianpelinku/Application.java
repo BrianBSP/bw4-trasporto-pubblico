@@ -12,6 +12,7 @@ import jakarta.persistence.TypedQuery;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
@@ -146,9 +147,9 @@ public class Application {
 //        System.out.println("*********************findMediaTempoEffettivo********************************");
 //        gd.findMediaTempoEffettivo("a75e415a-6b18-4b0f-a5c3-9b1fa839315b");
 
-
+boolean start = true;
         trasportoPubblico:
-        while (true) {
+        while (start) {
             inizioGestione();
             int scelta = gestioneInputScanner();
             switch (scelta) {
@@ -163,12 +164,16 @@ public class Application {
 
                 case 0:
                     // esci
+
+                    start = false;
+                    System.out.println("\nGrazie per averci scelto! \nA presto!");
+
                     scanner.close();
-                    return;
+                    break ;
                 default:
                     System.out.println("Segui le istruzioni per proseguire correttamente.");
             }
-            break;
+
         }
 
 
@@ -176,6 +181,7 @@ public class Application {
         emf.close();
     }
 
+    //gestione errori ok
     public static void inizioGestione() {
         System.out.println("-- Benvenuto --");
         System.out.println("Segui le istruzioni per proseguire: ");
@@ -185,6 +191,7 @@ public class Application {
 
     }
 
+    //gestione errori ok
     public static int gestioneInputScanner() {
         while (true) {
             try {
@@ -196,9 +203,10 @@ public class Application {
                     System.out.println("Scelta non valida. Inserire un numero tra 0 e 2.");
                 }
 
-            } catch (InputMismatchException e) {
-                System.out.println(e.getMessage());
-                scanner.nextLine();
+            }  catch (NumberFormatException e) {
+                System.out.println("Input non valido. Inserire un numero intero tra 0 e 2.");
+            } catch (Exception e) {
+                System.err.println("Errore imprevisto: " + e.getMessage());
             }
 
         }
@@ -332,21 +340,32 @@ public class Application {
 
 
     // gestione utente
+    //gestione errori ok
     public static void gestioneUtente() {
         while (true) {
-            System.out.println("Premi 1 per ACCEDERE e PROCEDI all'acquisto.");
-            System.out.println("Premi 2 per REGISTRARTI");
-            int sceltaUtente = Integer.parseInt(scanner.nextLine());
-            switch (sceltaUtente) {
-                case 1:
-                    gestioneUtenteRegistrato();
+            try {
+                System.out.println("Premi 1 per ACCEDERE e PROCEDI all'acquisto.");
+                System.out.println("Premi 2 per REGISTRARTI.");
+                System.out.println("Premi 0 per TORNARE al menu principale.");
+                int sceltaUtente = Integer.parseInt(scanner.nextLine());
 
-                    break;
-                case 2:
-                    Tessera tesseraUtente = gestioneNuovoUtente();
-                    break;
-                default:
-                    System.out.println("Inserire un numero intero tra 1 e 2.");
+                switch (sceltaUtente) {
+                    case 1:
+                        gestioneUtenteRegistrato();
+                        break;
+                    case 2:
+                        Tessera tesseraUtente = gestioneNuovoUtente();
+                        break;
+                    case 0:
+                        System.out.println("Tornando al menu principale...");
+                        return; // Esce dal metodo e torna al menu principale
+                    default:
+                        System.out.println("Inserire un numero intero tra 0 e 2.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Input non valido. Inserire un numero intero tra 0 e 2.");
+            }catch (Exception e) {
+                System.err.println("Errore imprevisto: " + e.getMessage());
             }
         }
     }
@@ -365,6 +384,12 @@ public class Application {
                         System.err.println("ID Tessera non valido. Assicurati di inserire un UUID corretto.");
                     }
                 }
+
+                System.out.println("Quale operazione vuoi eseguire? ");
+                System.out.println("Premi 1 per timbrare prendere un mezzo ");
+                System.out.println("Premi 2 per comprare biglietti o abbonamenti");
+
+                String inputTesseraID = scanner.nextLine();
 
                 Tessera tessera = td.findById(String.valueOf(tesseraID));
 
@@ -448,7 +473,6 @@ public class Application {
         return query.getResultList();
     }
 
-
     public static List<Mezzo> mezzi(Tratta tratta) {
         TypedQuery<Mezzo> query = em.createQuery("SELECT m FROM Mezzo m WHERE m.idTratta = :tratta", Mezzo.class);
         query.setParameter("tratta", tratta);
@@ -477,7 +501,6 @@ public class Application {
                 for (int i = 0; i < num; i++) {
                     Biglietto biglietto = new Biglietto(LocalDate.now(), 90, false, tesseraID, puntoScelto);
                     bd.save(biglietto);
-                    System.out.println("Biglietto " + (i + 1) + " creato: " + biglietto);
                 }
 
                 Tratta trattaScelta = scegliTratta(tesseraID);
@@ -489,47 +512,69 @@ public class Application {
 
     }
 
-
+    //gestione errori ok
     public static void acquistaAbbonamento(Tessera tesseraID, PuntoEmissione puntoScelto) {
         while (true) {
             try {
                 System.out.println("Creazione Abbonamento in corso...");
-                System.out.println("Scegli la durata dell'abbonamento: ");
-                System.out.println("SETTIMANALE");
-                System.out.println("MENSILE");
-                System.out.println("ANNUALE");
-                String durataAbbonamento = scanner.nextLine();
-                Durata durata = Durata.valueOf(durataAbbonamento.toUpperCase());
-                System.out.println("Scegli la data di emissione (formato AAAA-MM-GG): ");
-                String dataEmiss = scanner.nextLine();
-                LocalDate dataEmissione = LocalDate.parse(dataEmiss);
-                Abbonamento abbonamento = new Abbonamento(dataEmissione, durata, tesseraID, puntoScelto);
-                System.out.println("Abbonamento " + abbonamento.toString() + " salvato correttamente.");
-                ad.save(abbonamento);
-                // scegli tratta
-                System.out.println("Scegli la tratta: ");
-                List<Tratta> tratte = tratte();
-                for (int i = 0; i < tratte().size(); i++) {
-                    System.out.println("Premi " + (i + 1) + " per " + tratte().get(i).getNome());
+
+                // Gestione della durata dell'abbonamento
+                Durata durata = null;
+                while (durata == null) {
+                    try {
+                        System.out.println("Scegli la durata dell'abbonamento: ");
+                        System.out.println("SETTIMANALE");
+                        System.out.println("MENSILE");
+                        System.out.println("ANNUALE");
+                        String durataAbbonamento = scanner.nextLine().trim().toUpperCase();
+                        durata = Durata.valueOf(durataAbbonamento);
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Durata non valida. Inserisci una delle opzioni: SETTIMANALE, MENSILE, ANNUALE.");
+                    }
                 }
+
+                // Gestione della data di emissione
+                LocalDate dataEmissione = null;
+                while (dataEmissione == null) {
+                    try {
+                        System.out.println("Scegli la data di emissione (formato AAAA-MM-GG): ");
+                        String dataEmiss = scanner.nextLine().trim();
+                        dataEmissione = LocalDate.parse(dataEmiss);
+                    } catch (DateTimeParseException e) {
+                        System.out.println("Formato data non valido. Inserisci la data nel formato AAAA-MM-GG.");
+                    }
+                }
+
+                // Creazione dell'abbonamento
+                Abbonamento abbonamento = new Abbonamento(dataEmissione, durata, tesseraID, puntoScelto);
+                ad.save(abbonamento);
+
+                // Scelta della tratta
+                List<Tratta> tratte = tratte();
+                System.out.println("Scegli la tratta: ");
+                for (int i = 0; i < tratte.size(); i++) {
+                    System.out.println("Premi " + (i + 1) + " per " + tratte.get(i).getNome());
+                }
+
                 try {
-                    int scegliTratta = Integer.parseInt(scanner.nextLine()) - 1;
-                    if (scegliTratta >= 0 && scegliTratta < tratte().size()) {
+                    int scegliTratta = Integer.parseInt(scanner.nextLine().trim()) - 1;
+                    if (scegliTratta >= 0 && scegliTratta < tratte.size()) {
                         Tratta trattoScelto = tratte.get(scegliTratta);
                         System.out.println("Hai scelto la tratta " + trattoScelto.getNome());
+                        System.out.println("Buon viaggio!");
                         esciContinua(tesseraID);
+                    } else {
+                        System.out.println("Scelta non valida. Inserire un numero tra 1 e " + tratte.size() + ".");
                     }
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
+                } catch (NumberFormatException e) {
+                    System.out.println("Input non valido. Inserire un numero intero.");
                 }
+
             } catch (Exception e) {
-                System.out.println(e.getMessage());
-                scanner.nextLine();
+                System.out.println("Si è verificato un errore: " + e.getMessage());
             }
-            break;
+            break; // Esce dal ciclo dopo l'esecuzione
         }
-
-
     }
 
     //gestione errori ok
@@ -610,32 +655,44 @@ public class Application {
     }
 
 
-
+    //gestione errori ok
     public static Tessera gestioneNuovoUtente() {
         while (true) {
             try {
                 System.out.println("Inserisci il tuo Nome: ");
-                String nomeUtente = scanner.nextLine();
-                System.out.println("Inserisci il tuo Cognome: ");
-                String cognomeUtente = scanner.nextLine();
+                String nomeUtente = scanner.nextLine().trim();
+                if (nomeUtente.isEmpty()) {
+                    System.out.println("Il nome non può essere vuoto. Riprova.");
+                    continue;  // Torna all'inizio del ciclo per riprovare
+                }
 
-                // creo il nuovo utente
+                System.out.println("Inserisci il tuo Cognome: ");
+                String cognomeUtente = scanner.nextLine().trim();
+                if (cognomeUtente.isEmpty()) {
+                    System.out.println("Il cognome non può essere vuoto. Riprova.");
+                    continue;  // Torna all'inizio del ciclo per riprovare
+                }
+
                 Utente utente = new Utente(nomeUtente, cognomeUtente);
                 ud.save(utente);
                 System.out.println("Utente creato correttamente.");
-                // creo tessera di conseguenza
+
                 Tessera tesseraUtente = new Tessera(utente, LocalDate.now());
                 td.save(tesseraUtente);
-                System.out.println(tesseraUtente);
+                System.out.println("Tessera creata correttamente: " + tesseraUtente);
+
                 gestioneUtenteRegistrato();
+
                 tesseraUtenteLoggato = td.findById(tesseraUtente.getId().toString());
+                return tesseraUtenteLoggato;  // Ritorna la tessera dopo averla trovata
+
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                System.out.println("Si è verificato un errore: " + e.getMessage());
+                System.out.println("Riprova a inserire i dati.");
             }
-            break;
         }
-        return tesseraUtenteLoggato;
     }
+
 
     //gestione errori ok
     public static Biglietto scegliBiglietto(Tessera tesseraID) {
