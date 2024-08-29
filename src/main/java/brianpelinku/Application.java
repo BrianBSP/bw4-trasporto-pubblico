@@ -375,32 +375,49 @@ boolean start = true;
         while (true) {
             try {
                 UUID tesseraID = null;
+                // Richiede l'ID tessera finché non viene inserito un valore valido
                 while (tesseraID == null) {
                     try {
                         System.out.println("Inserisci il tuo ID Tessera: ");
-                        String inputTesseraID = scanner.nextLine();
+                        String inputTesseraID = scanner.nextLine().trim();
                         tesseraID = UUID.fromString(inputTesseraID);
                     } catch (IllegalArgumentException e) {
                         System.err.println("ID Tessera non valido. Assicurati di inserire un UUID corretto.");
                     }
                 }
 
-                System.out.println("Quale operazione vuoi eseguire? ");
-                System.out.println("Premi 1 per timbrare prendere un mezzo ");
-                System.out.println("Premi 2 per comprare biglietti o abbonamenti");
+                // Ricerca della tessera
+                Tessera tessera = td.findById(tesseraID.toString());
+                if (tessera == null) {
+                    System.out.println("Tessera non trovata. Verifica l'ID inserito.");
+                    continue; // Torna a richiedere l'ID tessera
+                }
 
-                String inputTesseraID = scanner.nextLine();
+                // Scelta dell'operazione da eseguire
+                while (true) {
+                    System.out.println("Quale operazione vuoi eseguire? ");
+                    System.out.println("Premi 1 per fare un viaggio. ");
+                    System.out.println("Premi 2 per comprare biglietti o abbonamenti.");
 
-                Tessera tessera = td.findById(String.valueOf(tesseraID));
-
-                sceltaPuntoEmissioneEOperazione(tessera);
+                    String operazioneScelta = scanner.nextLine().trim();
+                    if (operazioneScelta.equals("1")) {
+                        scegliTratta(tessera);
+                        break; // Esce dal ciclo dopo aver scelto l'operazione
+                    } else if (operazioneScelta.equals("2")) {
+                        sceltaPuntoEmissioneEOperazione(tessera);
+                        break; // Esce dal ciclo dopo aver scelto l'operazione
+                    } else {
+                        System.out.println("Scelta NON valida. Inserisci un numero tra 1 e 2.");
+                    }
+                }
 
             } catch (Exception e) {
                 System.err.println("Si è verificato un errore: " + e.getMessage());
             }
-            break;
+            break; // Esce dal ciclo principale una volta completata l'operazione
         }
     }
+
 
     //gestione errori ok
     public static void sceltaPuntoEmissioneEOperazione(Tessera tessera){
@@ -470,7 +487,14 @@ boolean start = true;
         TypedQuery<Biglietto> query = em.createQuery("SELECT b FROM Biglietto b WHERE b.idTessera = :tessera", Biglietto.class);
         query.setParameter("tessera", tessera);
         //System.out.println(tessera);
-        return query.getResultList();
+
+        List<Biglietto> resultList = query.getResultList();
+        if (resultList.isEmpty()) {
+            System.out.println("Non ci sono Biglietti su questa tessera!");
+            System.out.println("Compra dei biglietti!");
+            sceltaPuntoEmissioneEOperazione(tessera);
+        }
+        return resultList;
     }
 
     public static List<Mezzo> mezzi(Tratta tratta) {
