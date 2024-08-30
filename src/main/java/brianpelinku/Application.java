@@ -74,6 +74,8 @@ public class Application {
         Timbratura timbratura1 = new Timbratura(LocalDateTime.of(2024, 7, 12, 10, 31), mezzo1, biglietto1);
         Timbratura timbratura2 = new Timbratura(LocalDateTime.of(2024, 8, 22, 12, 10), mezzo2, biglietto2);
 
+        //ped.updateStatoDistributore("88a2b9f8-e79f-406d-9b26-afe52b246569", StatoDistributore.FUORI_SERVIZIO);
+
         /*ped.save(distributore1);
         ped.save(distributore2);
         ped.save(rivenditore1);
@@ -96,7 +98,7 @@ public class Application {
         //md.save(mezzo2);
 //        smd.save(statoMezzo2);
 //        gd.save(giro1tratta1);
-        gd.save(giro2tratta1);
+        //gd.save(giro2tratta1);
 //        gd.save(giro3tratta1);
 //        gd.save(giro4tratta1);
 //        timbd.save(timbratura1);
@@ -189,7 +191,6 @@ public class Application {
         TypedQuery<Mezzo> query = em.createQuery("SELECT m FROM Mezzo m WHERE m.idTratta = :tratta", Mezzo.class);
         query.setParameter("tratta", tratta);
         System.out.println("Mezzi disponibili per questa tratta: " + tratta.getNome());
-        query.getResultList().forEach(System.out::println);
         return query.getResultList();
     }
 
@@ -257,10 +258,10 @@ public class Application {
             System.out.println("Premi 9 per Trovare tutti i giri fatti da un mezzo");
             System.out.println("Premi 10 per Trovare il tempo effettivo di percorrenza di un tratta da un determinato mezzo");
             System.out.println("Premi 11 per Trovare il tempo medio di percorrenza della tratta scelta");
-            System.out.println("Premi 12 per Cambiare stato di attività distributori automatici. \nATTIVO/FUORI SERVIZIO");
+            System.out.println("Premi 12 per Cambiare stato di attività distributori automatici. ATTIVO/FUORI SERVIZIO");
             System.out.println("Premi 13 per Creare una nuova tratta");
             System.out.println("Premi 14 per Creare un nuovo mezzo");
-            System.out.println("Premi 15 per Cambiare stato del mezzo. \nSERVIO/MANUTENZIONE");
+            System.out.println("Premi 15 per Cambiare stato del mezzo. SERVIO/MANUTENZIONE");
             System.out.println("Premi 16 per Creare un nuovo giro-tratta");
             System.out.println("Premi 17 per Creare un nuovo distributore automatico");
             System.out.println("Premi 18 per Creare un nuovo rivenditore autorizzato");
@@ -474,11 +475,11 @@ public class Application {
             }
             try {
                 int sceltaTessera = Integer.parseInt(scanner.nextLine()) - 1;
-                if (sceltaTessera > 0 && sceltaTessera < tessere.size()) {
+                if (sceltaTessera >= 0 && sceltaTessera < tessere.size()) {
                     Tessera tesseraScelta = tessere.get(sceltaTessera);
                     ad.findValiditaAbbonamento(tesseraScelta.getId().toString());
                 } else {
-                    System.out.println("Inserimento NON valido. Inserisci un numero intero.");
+                    System.out.println("Inserimento NON valido. Inserisci un numero valido.");
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -612,13 +613,16 @@ public class Application {
         List<DistributoreAutomatico> distributori = distributoriAuto();
         System.out.println("\nSeleziona il Distributore Automatico al quale vuoi cambiare lo stato di attività. ATTIVO/FUORI SERVIZIO");
         for (int i = 0; i < distributori.size(); i++) {
-            System.out.println("Premi" + (i + 1) + " per Distributore Automatico " + distributori.get(i).getNome() + " - " + distributori.get(i).getStato());
+            System.out.println("Premi " + (i + 1) + " per Distributore Automatico " + distributori.get(i).getNome() + " - " + distributori.get(i).getStato());
         }
         try {
             int sceltaDistributore = Integer.parseInt(scanner.nextLine()) - 1;
             if (sceltaDistributore >= 0 && sceltaDistributore < distributori.size()) {
                 DistributoreAutomatico distributoreScelto = distributori.get(sceltaDistributore);
-                ped.updateStatoDistributore(distributoreScelto.getId().toString(), distributoreScelto.getStato());
+                System.out.println("Inserisci nuovo stato di attività del distributore: ATTIVO/FUORI SERVIZIO");
+                String stato = scanner.nextLine();
+                StatoDistributore statoDistributore = StatoDistributore.valueOf(stato.toUpperCase());
+                ped.updateStatoDistributore(distributoreScelto.getId().toString(), statoDistributore);
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -690,7 +694,7 @@ public class Application {
                 StatoDelMezzo stato = StatoDelMezzo.valueOf(statoDelMezzo.toUpperCase());
                 StatoMezzo statoMezzo = new StatoMezzo(LocalDate.now(), stato, mezzoScelto);
                 smd.save(statoMezzo);
-                md.updateStatoMezzo(mezzoScelto.getId().toString(), mezzoScelto.getStato());
+                //md.updateStatoMezzo(mezzoScelto.getId().toString(), mezzoScelto.getStato());
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
