@@ -261,7 +261,7 @@ public class Application {
 
                 if (sceltaAdmin == 0) {
                     System.out.println("Uscita dal menu amministratore.");
-                    break; // Esce dal ciclo e quindi termina il metodo
+                    return; // Esce dal ciclo e quindi termina il metodo
                 }
 
                 switch (sceltaAdmin) {
@@ -347,7 +347,7 @@ public class Application {
                 switch (sceltaAdmin) {
                     case 1:
                         scegliOpzioneAdmin(); // Torna al menu principale
-                        return; // Termina il metodo per evitare un loop infinito
+
                     case 2:
                         System.out.println("\nArrivederci e grazie");
                         scanner.close();
@@ -374,9 +374,13 @@ public class Application {
             if (sceltaPunta >= 0 && sceltaPunta < puntiVendita.size()) {
                 PuntoEmissione puntoScelto = puntiVendita.get(sceltaPunta);
                 ad.findAbbonamentiPerPuntoEmissione(puntoScelto).forEach(System.out::println);
+            }else {
+                System.err.println("Errore, inserisci un dato valido!!");
             }
+        }catch (NumberFormatException e) {
+            System.err.println("Errore: Inserire un numero intero valido.");
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
 
     }
@@ -393,9 +397,13 @@ public class Application {
             if (sceltaPunta >= 0 && sceltaPunta < puntiVendita.size()) {
                 PuntoEmissione puntoScelto = puntiVendita.get(sceltaPunta);
                 bd.findBigliettoPerPuntoEmissione(puntoScelto).forEach(System.out::println);
+            }else {
+                System.err.println("Errore, inserisci un dato valido!!");
             }
+        }catch (NumberFormatException e) {
+            System.err.println("Errore: Inserire un numero intero valido.");
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
     }
 
@@ -418,7 +426,7 @@ public class Application {
 
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
     }
 
@@ -441,7 +449,7 @@ public class Application {
 
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
     }
 
@@ -459,13 +467,15 @@ public class Application {
                     Tessera tesseraScelta = tessere.get(sceltaTessera);
                     ad.findValiditaAbbonamento(tesseraScelta.getId().toString());
                 } else {
-                    System.out.println("Inserimento NON valido. Inserisci un numero valido.");
+                    System.err.println("Inserimento NON valido. Inserisci un numero valido.");
                 }
+            }catch (NumberFormatException e) {
+                System.err.println("Errore: Inserire un numero intero valido.");
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                System.err.println("Errore imprevisto " + e.getMessage());
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
     }
 
@@ -481,9 +491,13 @@ public class Application {
             if (sceltaMezzo >= 0 && sceltaMezzo < mezzi.size()) {
                 Mezzo mezzoScelto = mezzi.get(sceltaMezzo);
                 smd.findStatiMezzo(mezzoScelto).forEach(System.out::println);
+            }else {
+                System.err.println("Inserimento NON valido. Inserisci un numero valido.");
             }
+        }catch (NumberFormatException e) {
+            System.err.println("Errore: Inserire un numero intero valido.");
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
 
     }
@@ -503,7 +517,7 @@ public class Application {
             timbd.findTimbratureNelTempo(dataInizioControllo, dataFineControllo).forEach(System.out::println);
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
     }
 
@@ -519,9 +533,13 @@ public class Application {
             if (sceltaMezzo >= 0 && sceltaMezzo < mezzi.size()) {
                 Mezzo mezzoScelto = mezzi.get(sceltaMezzo);
                 timbd.findTimbratureDiUnMezzo(mezzoScelto.getId().toString()).forEach(System.out::println);
+            }else {
+                System.err.println("Inserimento NON valido. Inserisci un numero valido.");
             }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+        }catch (NumberFormatException e) {
+            System.err.println("Errore: Inserire un numero intero valido.");
+        }catch (Exception e) {
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
     }
 
@@ -540,9 +558,14 @@ public class Application {
 
                 System.out.println("\nIl numero di giri fatti dal Mezzo: ");
                 gd.findNumeroGiriMezzo(mezzoScelto);
+            }else {
+                System.err.println("Inserimento NON valido. Inserisci un numero valido.");
             }
+        }catch (NumberFormatException e) {
+            System.err.println("Errore: Inserire un numero intero valido.");
+
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
     }
 
@@ -558,9 +581,14 @@ public class Application {
             if (sceltaTratta >= 0 && sceltaTratta < tratte.size()) {
                 Tratta trattaScelta = tratte.get(sceltaTratta);
                 gd.findTempoEffettivo(trattaScelta.getId().toString());
+            }else {
+                System.err.println("Inserimento NON valido. Inserisci un numero valido.");
             }
+        }catch (NumberFormatException e) {
+            System.err.println("Errore: Inserire un numero intero valido.");
+
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
 
     }
@@ -580,10 +608,13 @@ public class Application {
                 //Tratta idTratta = mezzoScelto.getIdTratta();
                 gd.findMediaTempoEffettivo(mezzoScelto.getIdTratta().getId().toString(), mezzoScelto.getId().toString());
             } else {
-                System.out.println("Errore: inserisci un numero valido.");
+                System.err.println("Inserimento NON valido. Inserisci un numero valido.");
             }
+        }catch (NumberFormatException e) {
+            System.err.println("Errore: Inserire un numero intero valido.");
+
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
 
     }
@@ -603,9 +634,14 @@ public class Application {
                 String stato = scanner.nextLine();
                 StatoDistributore statoDistributore = StatoDistributore.valueOf(stato.toUpperCase());
                 ped.updateStatoDistributore(distributoreScelto.getId().toString(), statoDistributore);
+            }else {
+                System.err.println("Inserimento NON valido. Inserisci un numero valido.");
             }
+        }catch (NumberFormatException e) {
+            System.err.println("Errore: Inserire un numero intero valido.");
+
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
     }
 
@@ -624,8 +660,11 @@ public class Application {
 
             Tratta tratta = new Tratta(nomeTratta, luogoPartenza, luogoCapolinea, tempoPrevisto);
             trd.save(tratta);
+        } catch (NumberFormatException e) {
+            System.err.println("Errore: Inserire un numero intero valido.");
+
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
     }
 
@@ -650,10 +689,14 @@ public class Application {
                 StatoDelMezzo statoDelMezzo = StatoDelMezzo.valueOf(statoMezzo.toUpperCase());
                 Mezzo mezzo = new Mezzo(tipoDiMezzo, capienza, statoDelMezzo, trattaScelta);
                 md.save(mezzo);
+            }else {
+                System.err.println("Errore, inserisci un dato valido!!");
             }
 
+        }catch (NumberFormatException e) {
+            System.err.println("Errore: Inserire un numero intero valido.");
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
     }
 
@@ -675,9 +718,14 @@ public class Application {
                 StatoMezzo statoMezzo = new StatoMezzo(LocalDate.now(), stato, mezzoScelto);
                 smd.save(statoMezzo);
                 //md.updateStatoMezzo(mezzoScelto.getId().toString(), mezzoScelto.getStato());
+            }else {
+                System.err.println("Errore, inserisci un dato valido!!");
             }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+
+        }catch (NumberFormatException e) {
+            System.err.println("Errore: Inserire un numero intero valido.");
+        }catch (Exception e) {
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
 
     }
@@ -704,9 +752,14 @@ public class Application {
                 LocalDateTime dataArrivoGiro = LocalDateTime.parse(dataArrivo);
                 GiroTratta giroTratta = new GiroTratta(mezzoScelto, mezzoScelto.getIdTratta(), dataPartenzaGiro, dataArrivoGiro);
                 gd.save(giroTratta);
+            }else {
+                System.err.println("Errore, inserisci un dato valido!!");
             }
+
+        }catch (NumberFormatException e) {
+            System.err.println("Errore: Inserire un numero intero valido.");
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
     }
 
@@ -724,7 +777,7 @@ public class Application {
             DistributoreAutomatico distributoreAutomatico = new DistributoreAutomatico(nome, luogo, statoDistributore);
             ped.save(distributoreAutomatico);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
     }
 
@@ -743,7 +796,7 @@ public class Application {
             ped.save(rivenditoreAutorizzato);
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
     }
 
@@ -1243,7 +1296,8 @@ public class Application {
 
                         if (abbonamentoScelto.getDataScadenza().isAfter(LocalDate.now())) {
                             System.out.println("L'abbonamento scelto è ancora valido! Buon viaggio!");
-                            return; // Esce dal ciclo dopo aver scelto un abbonamento valido
+                            esciContinua(tesseraID);
+                           // return; // Esce dal ciclo dopo aver scelto un abbonamento valido
                         } else {
                             System.out.println("L'abbonamento scelto è scaduto il " + abbonamentoScelto.getDataScadenza());
                             System.out.println("Scegli un altro abbonamento oppure comprane uno nuovo!");
