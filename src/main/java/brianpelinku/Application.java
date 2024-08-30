@@ -233,9 +233,14 @@ public class Application {
             System.out.println("Premi 7 per Trovare i biglietti timbrati in un certo periodo");
             System.out.println("Premi 8 per Trovare i biglietti timbrati in un certo mezzo");
             System.out.println("Premi 9 per Trovare tutti i giri fatti da un mezzo");
-            System.out.println("Premi 10 per trovare il tempo effettivo di percorrenza di un tratta da un determinato mezzo");
+            System.out.println("Premi 10 per Trovare il tempo effettivo di percorrenza di un tratta da un determinato mezzo");
             System.out.println("Premi 11 per Trovare il tempo medio di percorrenza della tratta scelta");
-            System.out.println("Premi 12 per Cambiare stato di attività distributori automatici");
+            System.out.println("Premi 12 per Cambiare stato di attività distributori automatici. \nATTIVO/FUORI SERVIZIO");
+            System.out.println("Premi 13 per Creare una nuova tratta");
+            System.out.println("Premi 14 per Creare un nuovo mezzo");
+            System.out.println("Premi 15 per Cambiare stato del mezzo. \nSERVIO/MANUTENZIONE");
+            System.out.println("Premi 16 per Creare un nuovo giro-tratta");
+            System.out.println("Premi 17 per Creare un nuovo punto di emissione");
             System.out.println("Premi 0 per USCIRE");
 
             int sceltaAdmin = Integer.parseInt(scanner.nextLine());
@@ -287,6 +292,36 @@ public class Application {
                     break;
                 case 12:
                     cambiaStatoAttivitaDistributori();
+                    esciContinuaAdmin();
+                    break;
+                case 13:
+                    // Creare una nuova tratta
+                    creaNuovaTratta();
+                    esciContinuaAdmin();
+                    break;
+                case 14:
+                    //crea mezzo
+                    creaNuovoMezzo();
+                    esciContinuaAdmin();
+                    break;
+                case 15:
+                    //cambia stato mezzo
+                    cambiaStatoMezzo();
+                    esciContinuaAdmin();
+                    break;
+                case 16:
+                    // crea giro tratta
+                    creaNuovoGiroTratta();
+                    esciContinuaAdmin();
+                    break;
+                case 17:
+                    //crea distributori
+                    creaNuovoDistributore();
+                    esciContinuaAdmin();
+                    break;
+                case 18:
+                    // crea rivenditori
+                    creaRivenditore();
                     esciContinuaAdmin();
                     break;
 
@@ -566,6 +601,145 @@ public class Application {
             System.out.println(e.getMessage());
         }
     }
+
+    // 13 Creare una nuova tratta
+    public static void creaNuovaTratta() {
+        System.out.println("\n--> Crea una nuova tratta:");
+        try {
+            System.out.println("inserisci il nome della nuova tratta:");
+            String nomeTratta = scanner.nextLine();
+            System.out.println("Inserisci luogo di partenza: ");
+            String luogoPartenza = scanner.nextLine();
+            System.out.println("Inserisci luogo del capolinea: ");
+            String luogoCapolinea = scanner.nextLine();
+            System.out.println("Inserisci il tempo previsto: ");
+            Integer tempoPrevisto = Integer.parseInt(scanner.nextLine());
+
+            Tratta tratta = new Tratta(nomeTratta, luogoPartenza, luogoCapolinea, tempoPrevisto);
+            trd.save(tratta);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    // 14 crea mezzo
+    public static void creaNuovoMezzo() {
+        System.out.println("\n--> Crea un nuovo mezzo: ");
+        try {
+            List<Tratta> tratte = tratte();
+            for (int i = 0; i < tratte.size(); i++) {
+                System.out.println("Premi " + (i + 1) + " per Tratta " + tratte.get(i).getNome());
+            }
+            int sceltaTratta = Integer.parseInt(scanner.nextLine()) - 1;
+            if (sceltaTratta >= 0 && sceltaTratta < tratte.size()) {
+                Tratta trattaScelta = tratte.get(sceltaTratta);
+                System.out.println("Inserisci Tipo di mezzo: \nTRAM/AUTOBUS");
+                String tipoMezzo = scanner.nextLine();
+                TipoMezzo tipoDiMezzo = TipoMezzo.valueOf(tipoMezzo.toUpperCase());
+                System.out.println("Inserisci capienza del mezzo: ");
+                Integer capienza = Integer.parseInt(scanner.nextLine());
+                System.out.println("Inserisci stato del mezzo: \nSERVIZIO/MANUTENZIONE");
+                String statoMezzo = scanner.nextLine();
+                StatoDelMezzo statoDelMezzo = StatoDelMezzo.valueOf(statoMezzo.toUpperCase());
+                Mezzo mezzo = new Mezzo(tipoDiMezzo, capienza, statoDelMezzo, trattaScelta);
+                md.save(mezzo);
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    // 15 cambia stato mezzo
+    public static void cambiaStatoMezzo() {
+
+        try {
+
+            List<Mezzo> mezzi = tuttiMezzi();
+            for (int i = 0; i < mezzi.size(); i++) {
+                System.out.println("Premi " + (i + 1) + " per Mezzo " + mezzi.get(i).getId() + " - " + mezzi.get(i).getStato());
+            }
+            int sceltaMezzo = Integer.parseInt(scanner.nextLine()) - 1;
+            if (sceltaMezzo >= 0 && sceltaMezzo < mezzi.size()) {
+                Mezzo mezzoScelto = mezzi.get(sceltaMezzo);
+                System.out.println("Inserisci il nuovo stato del mezzo: \nSERVIZIO/MANUTENZIONE");
+                String statoDelMezzo = scanner.nextLine();
+                StatoDelMezzo stato = StatoDelMezzo.valueOf(statoDelMezzo.toUpperCase());
+                StatoMezzo statoMezzo = new StatoMezzo(LocalDate.now(), stato, mezzoScelto);
+                smd.save(statoMezzo);
+                md.updateStatoMezzo(mezzoScelto.getId().toString(), mezzoScelto.getStato());
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
+
+    // 16 crea giro tratta
+    public static void creaNuovoGiroTratta() {
+        try {
+
+            System.out.println("Seleziona il mezzo che vuoi far girare: ");
+            List<Mezzo> mezzi = tuttiMezzi();
+            for (int i = 0; i < mezzi.size(); i++) {
+                System.out.println("Premi " + (i + 1) + " per Mezzo " + mezzi.get(i).getId());
+            }
+            int sceltaMezzo = Integer.parseInt(scanner.nextLine()) - 1;
+            if (sceltaMezzo >= 0 && sceltaMezzo < mezzi.size()) {
+                Mezzo mezzoScelto = mezzi.get(sceltaMezzo);
+                System.out.println("Inserisci DATA e ORA della partenza:");
+                System.out.println("ATTENZIONE: FORMATO --> AAAA/MM/GGTHH:MM:SS");
+                String dataPartenza = scanner.nextLine();
+                LocalDateTime dataPartenzaGiro = LocalDateTime.parse(dataPartenza);
+                System.out.println("Inserisci DATA e ORA della arrivo:");
+                System.out.println("ATTENZIONE: FORMATO --> AAAA/MM/GGTHH:MM:SS");
+                String dataArrivo = scanner.nextLine();
+                LocalDateTime dataArrivoGiro = LocalDateTime.parse(dataArrivo);
+                GiroTratta giroTratta = new GiroTratta(mezzoScelto, mezzoScelto.getIdTratta(), dataPartenzaGiro, dataArrivoGiro);
+                gd.save(giroTratta);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    // 17 crea distributore
+    public static void creaNuovoDistributore() {
+        System.out.println("Crea un nuovo distributore automatico: ");
+        try {
+            System.out.println("Inserisci un nome: ");
+            String nome = scanner.nextLine();
+            System.out.println("Inserisci un luogo: ");
+            String luogo = scanner.nextLine();
+            System.out.println("Inserisci lo stato di attività del distributore: \nATTIVO/FUORI SERVIZIO");
+            String stato = scanner.nextLine();
+            StatoDistributore statoDistributore = StatoDistributore.valueOf(stato.toUpperCase());
+            DistributoreAutomatico distributoreAutomatico = new DistributoreAutomatico(nome, luogo, statoDistributore);
+            ped.save(distributoreAutomatico);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    // 18 crea rivenditore
+    public static void creaRivenditore() {
+        System.out.println("Crea un nuovo rivenditore autorizzato: ");
+        try {
+            System.out.println("Inserisci un nome: ");
+            String nome = scanner.nextLine();
+            System.out.println("Inserisci un luogo: ");
+            String luogo = scanner.nextLine();
+            System.out.println("Inserisci il tipo di rivenditore: \nTABACCAIO/EDICOLA");
+            String tipo = scanner.nextLine();
+            TipoRivenditore tipoRivenditore = TipoRivenditore.valueOf(tipo.toUpperCase());
+            RivenditoreAutorizzato rivenditoreAutorizzato = new RivenditoreAutorizzato(nome, luogo, tipoRivenditore);
+            ped.save(rivenditoreAutorizzato);
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
 
     // gestione utente
     public static void gestioneUtente() {
