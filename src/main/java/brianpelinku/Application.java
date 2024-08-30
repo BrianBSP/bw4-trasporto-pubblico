@@ -1243,7 +1243,8 @@ public class Application {
 
                         if (abbonamentoScelto.getDataScadenza().isAfter(LocalDate.now())) {
                             System.out.println("L'abbonamento scelto è ancora valido! Buon viaggio!");
-                            return; // Esce dal ciclo dopo aver scelto un abbonamento valido
+                            esciContinua(tesseraID);
+                           // return; // Esce dal ciclo dopo aver scelto un abbonamento valido
                         } else {
                             System.out.println("L'abbonamento scelto è scaduto il " + abbonamentoScelto.getDataScadenza());
                             System.out.println("Scegli un altro abbonamento oppure comprane uno nuovo!");
