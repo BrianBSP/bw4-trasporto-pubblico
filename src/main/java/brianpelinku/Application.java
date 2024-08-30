@@ -53,13 +53,19 @@ public class Application {
 //        Tratta tratta2 = new Tratta("tratta2", "partenza2", "capolinea2", 60);
 //        Mezzo mezzo1 = new Mezzo(TipoMezzo.TRAM, 100, StatoDelMezzo.SERVIZIO, trd.findById("3f2ce3aa-4117-4248-8d3a-cd68e6704f96"));
 //        Mezzo mezzo2 = new Mezzo(TipoMezzo.AUTOBUS, 40, StatoDelMezzo.SERVIZIO, trd.findById("4f702139-88da-44b7-9921-1c32c58ed534"));
+
 //        // StatoMezzo statoMezzo1 = new StatoMezzo(LocalDate.now(), StatoDelMezzo.SERVIZIO, md.findById("2279ba24-b8a6-48c3-b1b4-4c06fc52084a"));GiroTratta giro1tratta1 = new GiroTratta(mezzo1, tratta1, LocalDateTime.of(2024, 7, 12, 10, 30), LocalDateTime.of(2024, 7, 12, 11, 20));
+
+//        // StatoMezzo statoMezzo1 = new StatoMezzo(LocalDate.now(), StatoDelMezzo.SERVIZIO, md.findById("2279ba24-b8a6-48c3-b1b4-4c06fc52084a"));
+//        GiroTratta giro1tratta1 = new GiroTratta(mezzo1, tratta1, LocalDateTime.of(2024, 7, 12, 10, 30), LocalDateTime.of(2024, 7, 12, 11, 20));
+
 //        GiroTratta giro2tratta1 = new GiroTratta(md.findById("0db1a909-1630-4c0c-993d-84e8f489afba"), trd.findById("3f2ce3aa-4117-4248-8d3a-cd68e6704f96"), LocalDateTime.of(2024, 8, 22, 12, 0), LocalDateTime.of(2024, 8, 22, 12, 58));
 //        GiroTratta giro3tratta1 = new GiroTratta(mezzo2, tratta1, LocalDateTime.of(2024, 8, 22, 12, 58), LocalDateTime.of(2024, 8, 22, 14, 1));
 //        GiroTratta giro4tratta1 = new GiroTratta(mezzo2, tratta1, LocalDateTime.of(2024, 8, 22, 14, 2), LocalDateTime.of(2024, 8, 22, 15, 5));
 //        Timbratura timbratura1 = new Timbratura(LocalDateTime.of(2024, 7, 12, 10, 31), mezzo1, biglietto1);
 //        Timbratura timbratura2 = new Timbratura(LocalDateTime.of(2024, 8, 22, 12, 10), mezzo2, biglietto2);
 //        //ped.updateStatoDistributore("88a2b9f8-e79f-406d-9b26-afe52b246569", StatoDistributore.FUORI_SERVIZIO);
+
         /*ped.save(distributore1);
         ped.save(distributore2);
         ped.save(rivenditore1);
@@ -215,156 +221,151 @@ public class Application {
             try {
                 System.out.println("Inserisci la password: ");
                 int password = Integer.parseInt(scanner.nextLine());
+
                 if (password == 1234) {
                     System.out.println("Password CORRETTA. Accesso consentito.");
                     scegliOpzioneAdmin();
+                    break; // Esce dal ciclo dopo l'accesso riuscito
                 } else {
                     System.out.println("Password ERRATA. Accesso negato.");
                 }
+            } catch (NumberFormatException e) {
+                System.out.println("Errore: Inserire un numero intero valido.");
             } catch (InputErratoExceptions e) {
                 System.out.println(e.getMessage());
             }
-            break;
         }
     }
+
 
     public static void scegliOpzioneAdmin() {
-        try {
-            System.out.println("\n--> Scegli un opzione per proseguire: ");
-            System.out.println("Premi 1 per Trovare abbonamenti venduti per ogni punto vendita");
-            System.out.println("Premi 2 per Trovare biglietti venduti per ogni punto vendita");
-            System.out.println("Premi 3 per Trovare abbonamenti venduti in un certo periodo");
-            System.out.println("Premi 4 per Trovare biglietti venduti in un certo periodo");
-            System.out.println("Premi 5 per Controllare tipo di validità dell'abbonamento");
-            System.out.println("Premi 6 per Controllare lo stato di attività dei mezzi");
-            System.out.println("Premi 7 per Trovare i biglietti timbrati in un certo periodo");
-            System.out.println("Premi 8 per Trovare i biglietti timbrati in un certo mezzo");
-            System.out.println("Premi 9 per Trovare tutti i giri fatti da un mezzo");
-            System.out.println("Premi 10 per Trovare il tempo effettivo di percorrenza di un tratta da un determinato mezzo");
-            System.out.println("Premi 11 per Trovare il tempo medio di percorrenza della tratta scelta");
-            System.out.println("Premi 12 per Cambiare stato di attività distributori automatici. ATTIVO/FUORI SERVIZIO");
-            System.out.println("Premi 13 per Creare una nuova tratta");
-            System.out.println("Premi 14 per Creare un nuovo mezzo");
-            System.out.println("Premi 15 per Cambiare stato del mezzo. SERVIO/MANUTENZIONE");
-            System.out.println("Premi 16 per Creare un nuovo giro-tratta");
-            System.out.println("Premi 17 per Creare un nuovo distributore automatico");
-            System.out.println("Premi 18 per Creare un nuovo rivenditore autorizzato");
-            System.out.println("Premi 0 per USCIRE");
+        while (true) {
+            try {
+                System.out.println("\n--> Scegli un'opzione per proseguire: ");
+                System.out.println("Premi 1 per Trovare abbonamenti venduti per ogni punto vendita");
+                System.out.println("Premi 2 per Trovare biglietti venduti per ogni punto vendita");
+                System.out.println("Premi 3 per Trovare abbonamenti venduti in un certo periodo");
+                System.out.println("Premi 4 per Trovare biglietti venduti in un certo periodo");
+                System.out.println("Premi 5 per Controllare tipo di validità dell'abbonamento");
+                System.out.println("Premi 6 per Controllare lo stato di attività dei mezzi");
+                System.out.println("Premi 7 per Trovare i biglietti timbrati in un certo periodo");
+                System.out.println("Premi 8 per Trovare i biglietti timbrati in un certo mezzo");
+                System.out.println("Premi 9 per Trovare tutti i giri fatti da un mezzo");
+                System.out.println("Premi 10 per Trovare il tempo effettivo di percorrenza di una tratta da un determinato mezzo");
+                System.out.println("Premi 11 per Trovare il tempo medio di percorrenza della tratta scelta");
+                System.out.println("Premi 12 per Cambiare stato di attività distributori automatici. ATTIVO/FUORI SERVIZIO");
+                System.out.println("Premi 13 per Creare una nuova tratta");
+                System.out.println("Premi 14 per Creare un nuovo mezzo");
+                System.out.println("Premi 15 per Cambiare stato del mezzo. SERVIZIO/MANUTENZIONE");
+                System.out.println("Premi 16 per Creare un nuovo giro-tratta");
+                System.out.println("Premi 17 per Creare un nuovo distributore automatico");
+                System.out.println("Premi 18 per Creare un nuovo rivenditore autorizzato");
+                System.out.println("Premi 0 per USCIRE");
 
-            int sceltaAdmin = Integer.parseInt(scanner.nextLine());
+                int sceltaAdmin = Integer.parseInt(scanner.nextLine());
 
-            switch (sceltaAdmin) {
-                case 1:
-                    scegliPuntoVenditaTrovaAbbon();
-                    esciContinuaAdmin();
-                    break;
-                case 2:
-                    scegliPuntoVenditaTrovaBiglietti();
-                    esciContinuaAdmin();
-                    break;
-                case 3:
-                    trovaAbbonamentiVendutiInPeriodo();
-                    esciContinuaAdmin();
-                    break;
-                case 4:
-                    trovaBigliettiVendutiInPeriodo();
-                    esciContinuaAdmin();
-                    break;
-                case 5:
-                    controllaValiditaAbbonam();
-                    esciContinuaAdmin();
-                    break;
-                case 6:
-                    controlloStatoAttivitaMezzo();
-                    esciContinuaAdmin();
-                    break;
-                case 7:
-                    trovaBigliettiTimbratiInPeriodo();
-                    esciContinuaAdmin();
-                    break;
-                case 8:
-                    trovaBigliettiTimbratiInUnMezzo();
-                    esciContinuaAdmin();
-                    break;
-                case 9:
-                    trovaGiriFattiDaUnMezzo();
-                    esciContinuaAdmin();
-                    break;
-                case 10:
-                    trovaTempoEffDiUnaTratta();
-                    esciContinuaAdmin();
-                    break;
-                case 11:
-                    trovaTempoMedioMezzoTratta();
-                    esciContinuaAdmin();
-                    break;
-                case 12:
-                    cambiaStatoAttivitaDistributori();
-                    esciContinuaAdmin();
-                    break;
-                case 13:
-                    // Creare una nuova tratta
-                    creaNuovaTratta();
-                    esciContinuaAdmin();
-                    break;
-                case 14:
-                    //crea mezzo
-                    creaNuovoMezzo();
-                    esciContinuaAdmin();
-                    break;
-                case 15:
-                    //cambia stato mezzo
-                    cambiaStatoMezzo();
-                    esciContinuaAdmin();
-                    break;
-                case 16:
-                    // crea giro tratta
-                    creaNuovoGiroTratta();
-                    esciContinuaAdmin();
-                    break;
-                case 17:
-                    //crea distributori
-                    creaNuovoDistributore();
-                    esciContinuaAdmin();
-                    break;
-                case 18:
-                    // crea rivenditori
-                    creaRivenditore();
-                    esciContinuaAdmin();
-                    break;
+                if (sceltaAdmin == 0) {
+                    System.out.println("Uscita dal menu amministratore.");
+                    return; // Esce dal ciclo e quindi termina il metodo
+                }
 
-                default:
-                    System.out.println("Scegli correttamente un opzione per proseguire.");
-                    break;
+                switch (sceltaAdmin) {
+                    case 1:
+                        scegliPuntoVenditaTrovaAbbon();
+                        break;
+                    case 2:
+                        scegliPuntoVenditaTrovaBiglietti();
+                        break;
+                    case 3:
+                        trovaAbbonamentiVendutiInPeriodo();
+                        break;
+                    case 4:
+                        trovaBigliettiVendutiInPeriodo();
+                        break;
+                    case 5:
+                        controllaValiditaAbbonam();
+                        break;
+                    case 6:
+                        controlloStatoAttivitaMezzo();
+                        break;
+                    case 7:
+                        trovaBigliettiTimbratiInPeriodo();
+                        break;
+                    case 8:
+                        trovaBigliettiTimbratiInUnMezzo();
+                        break;
+                    case 9:
+                        trovaGiriFattiDaUnMezzo();
+                        break;
+                    case 10:
+                        trovaTempoEffDiUnaTratta();
+                        break;
+                    case 11:
+                        trovaTempoMedioMezzoTratta();
+                        break;
+                    case 12:
+                        cambiaStatoAttivitaDistributori();
+                        break;
+                    case 13:
+                        creaNuovaTratta();
+                        break;
+                    case 14:
+                        creaNuovoMezzo();
+                        break;
+                    case 15:
+                        cambiaStatoMezzo();
+                        break;
+                    case 16:
+                        creaNuovoGiroTratta();
+                        break;
+                    case 17:
+                        creaNuovoDistributore();
+                        break;
+                    case 18:
+                        creaRivenditore();
+                        break;
+                    default:
+                        System.out.println("Scegli correttamente un'opzione valida per proseguire.");
+                        break;
+                }
+
+                esciContinuaAdmin();
+
+            } catch (NumberFormatException e) {
+                System.out.println("Errore: Inserire un numero intero valido.");
+            } catch (Exception e) {
+                System.out.println("Si è verificato un errore: " + e.getMessage());
             }
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
         }
     }
+
 
     public static void esciContinuaAdmin() {
+        while (true) {
+            try {
+                System.out.println("\n--> Scegli un'opzione per proseguire: ");
+                System.out.println("Premi 1 per tornare al menu principale");
+                System.out.println("Premi 2 per uscire dall'applicazione");
 
-        System.out.println("\n--> Scegli un opzione per proseguire: ");
-        System.out.println("Premi 1 per tornare al menu principale");
-        System.out.println("Premi 2 per Uscire dall'applicazione");
+                int sceltaAdmin = Integer.parseInt(scanner.nextLine());
 
-        int sceltaAdmin = Integer.parseInt(scanner.nextLine());
+                switch (sceltaAdmin) {
+                    case 1:
+                        scegliOpzioneAdmin(); // Torna al menu principale
 
-        esci:
-        switch (sceltaAdmin) {
-            case 1:
-                scegliOpzioneAdmin();
-                break;
-            case 2:
-                System.out.println("\nArrivederci e grazie");
-                scanner.close();
-                break esci;
-            default:
-                System.out.println("Seleziona correttamente un'opzione.");
+                    case 2:
+                        System.out.println("\nArrivederci e grazie");
+                        scanner.close();
+                        System.exit(0); // Termina l'applicazione
+                    default:
+                        System.out.println("Seleziona correttamente un'opzione.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Errore: inserisci un numero intero valido.");
+            }
         }
-
     }
+
 
     // 1
     public static void scegliPuntoVenditaTrovaAbbon() {
@@ -378,9 +379,13 @@ public class Application {
             if (sceltaPunta >= 0 && sceltaPunta < puntiVendita.size()) {
                 PuntoEmissione puntoScelto = puntiVendita.get(sceltaPunta);
                 ad.findAbbonamentiPerPuntoEmissione(puntoScelto).forEach(System.out::println);
+            } else {
+                System.err.println("Errore, inserisci un dato valido!!");
             }
+        } catch (NumberFormatException e) {
+            System.err.println("Errore: Inserire un numero intero valido.");
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
 
     }
@@ -397,9 +402,13 @@ public class Application {
             if (sceltaPunta >= 0 && sceltaPunta < puntiVendita.size()) {
                 PuntoEmissione puntoScelto = puntiVendita.get(sceltaPunta);
                 bd.findBigliettoPerPuntoEmissione(puntoScelto).forEach(System.out::println);
+            } else {
+                System.err.println("Errore, inserisci un dato valido!!");
             }
+        } catch (NumberFormatException e) {
+            System.err.println("Errore: Inserire un numero intero valido.");
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
     }
 
@@ -422,7 +431,7 @@ public class Application {
 
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
     }
 
@@ -445,7 +454,7 @@ public class Application {
 
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
     }
 
@@ -463,13 +472,15 @@ public class Application {
                     Tessera tesseraScelta = tessere.get(sceltaTessera);
                     ad.findValiditaAbbonamento(tesseraScelta.getId().toString());
                 } else {
-                    System.out.println("Inserimento NON valido. Inserisci un numero valido.");
+                    System.err.println("Inserimento NON valido. Inserisci un numero valido.");
                 }
+            } catch (NumberFormatException e) {
+                System.err.println("Errore: Inserire un numero intero valido.");
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                System.err.println("Errore imprevisto " + e.getMessage());
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
     }
 
@@ -485,9 +496,13 @@ public class Application {
             if (sceltaMezzo >= 0 && sceltaMezzo < mezzi.size()) {
                 Mezzo mezzoScelto = mezzi.get(sceltaMezzo);
                 smd.findStatiMezzo(mezzoScelto).forEach(System.out::println);
+            } else {
+                System.err.println("Inserimento NON valido. Inserisci un numero valido.");
             }
+        } catch (NumberFormatException e) {
+            System.err.println("Errore: Inserire un numero intero valido.");
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
 
     }
@@ -507,7 +522,7 @@ public class Application {
             timbd.findTimbratureNelTempo(dataInizioControllo, dataFineControllo).forEach(System.out::println);
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
     }
 
@@ -523,9 +538,13 @@ public class Application {
             if (sceltaMezzo >= 0 && sceltaMezzo < mezzi.size()) {
                 Mezzo mezzoScelto = mezzi.get(sceltaMezzo);
                 timbd.findTimbratureDiUnMezzo(mezzoScelto.getId().toString()).forEach(System.out::println);
+            } else {
+                System.err.println("Inserimento NON valido. Inserisci un numero valido.");
             }
+        } catch (NumberFormatException e) {
+            System.err.println("Errore: Inserire un numero intero valido.");
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
     }
 
@@ -544,9 +563,14 @@ public class Application {
 
                 System.out.println("\nIl numero di giri fatti dal Mezzo: ");
                 gd.findNumeroGiriMezzo(mezzoScelto);
+            } else {
+                System.err.println("Inserimento NON valido. Inserisci un numero valido.");
             }
+        } catch (NumberFormatException e) {
+            System.err.println("Errore: Inserire un numero intero valido.");
+
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
     }
 
@@ -562,9 +586,14 @@ public class Application {
             if (sceltaTratta >= 0 && sceltaTratta < tratte.size()) {
                 Tratta trattaScelta = tratte.get(sceltaTratta);
                 gd.findTempoEffettivo(trattaScelta.getId().toString());
+            } else {
+                System.err.println("Inserimento NON valido. Inserisci un numero valido.");
             }
+        } catch (NumberFormatException e) {
+            System.err.println("Errore: Inserire un numero intero valido.");
+
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
 
     }
@@ -584,10 +613,13 @@ public class Application {
                 //Tratta idTratta = mezzoScelto.getIdTratta();
                 gd.findMediaTempoEffettivo(mezzoScelto.getIdTratta().getId().toString(), mezzoScelto.getId().toString());
             } else {
-                System.out.println("Errore: inserisci un numero valido.");
+                System.err.println("Inserimento NON valido. Inserisci un numero valido.");
             }
+        } catch (NumberFormatException e) {
+            System.err.println("Errore: Inserire un numero intero valido.");
+
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
 
     }
@@ -607,9 +639,14 @@ public class Application {
                 String stato = scanner.nextLine();
                 StatoDistributore statoDistributore = StatoDistributore.valueOf(stato.toUpperCase());
                 ped.updateStatoDistributore(distributoreScelto.getId().toString(), statoDistributore);
+            } else {
+                System.err.println("Inserimento NON valido. Inserisci un numero valido.");
             }
+        } catch (NumberFormatException e) {
+            System.err.println("Errore: Inserire un numero intero valido.");
+
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
     }
 
@@ -628,8 +665,11 @@ public class Application {
 
             Tratta tratta = new Tratta(nomeTratta, luogoPartenza, luogoCapolinea, tempoPrevisto);
             trd.save(tratta);
+        } catch (NumberFormatException e) {
+            System.err.println("Errore: Inserire un numero intero valido.");
+
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
     }
 
@@ -654,10 +694,14 @@ public class Application {
                 StatoDelMezzo statoDelMezzo = StatoDelMezzo.valueOf(statoMezzo.toUpperCase());
                 Mezzo mezzo = new Mezzo(tipoDiMezzo, capienza, statoDelMezzo, trattaScelta);
                 md.save(mezzo);
+            } else {
+                System.err.println("Errore, inserisci un dato valido!!");
             }
 
+        } catch (NumberFormatException e) {
+            System.err.println("Errore: Inserire un numero intero valido.");
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
     }
 
@@ -679,9 +723,14 @@ public class Application {
                 StatoMezzo statoMezzo = new StatoMezzo(LocalDate.now(), stato, mezzoScelto);
                 smd.save(statoMezzo);
                 //md.updateStatoMezzo(mezzoScelto.getId().toString(), mezzoScelto.getStato());
+            } else {
+                System.err.println("Errore, inserisci un dato valido!!");
             }
+
+        } catch (NumberFormatException e) {
+            System.err.println("Errore: Inserire un numero intero valido.");
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
 
     }
@@ -708,9 +757,14 @@ public class Application {
                 LocalDateTime dataArrivoGiro = LocalDateTime.parse(dataArrivo);
                 GiroTratta giroTratta = new GiroTratta(mezzoScelto, mezzoScelto.getIdTratta(), dataPartenzaGiro, dataArrivoGiro);
                 gd.save(giroTratta);
+            } else {
+                System.err.println("Errore, inserisci un dato valido!!");
             }
+
+        } catch (NumberFormatException e) {
+            System.err.println("Errore: Inserire un numero intero valido.");
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
     }
 
@@ -728,7 +782,7 @@ public class Application {
             DistributoreAutomatico distributoreAutomatico = new DistributoreAutomatico(nome, luogo, statoDistributore);
             ped.save(distributoreAutomatico);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
     }
 
@@ -747,7 +801,7 @@ public class Application {
             ped.save(rivenditoreAutorizzato);
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Errore imprevisto " + e.getMessage());
         }
     }
 
@@ -1247,7 +1301,8 @@ public class Application {
 
                         if (abbonamentoScelto.getDataScadenza().isAfter(LocalDate.now())) {
                             System.out.println("L'abbonamento scelto è ancora valido! Buon viaggio!");
-                            return; // Esce dal ciclo dopo aver scelto un abbonamento valido
+                            esciContinua(tesseraID);
+                            // return; // Esce dal ciclo dopo aver scelto un abbonamento valido
                         } else {
                             System.out.println("L'abbonamento scelto è scaduto il " + abbonamentoScelto.getDataScadenza());
                             System.out.println("Scegli un altro abbonamento oppure comprane uno nuovo!");
