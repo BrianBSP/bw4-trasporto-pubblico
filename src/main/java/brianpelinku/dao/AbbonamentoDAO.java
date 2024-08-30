@@ -10,6 +10,7 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -104,7 +105,7 @@ public class AbbonamentoDAO {
             if (query.getResultList().isEmpty()) {
                 System.out.println("Non ci sono Abbonamenti su questa tessera!");
             }else {
-                query.getResultList().forEach(abbonamento -> System.out.println("La validità del Abbonamento " + abbonamento.getId() + " è " + abbonamento.getDurata()));
+                query.getResultList().forEach(abbonamento -> System.out.println("La validità del Abbonamento " + abbonamento.getId() + " è " + abbonamento.getDurata() + " e scade il " + abbonamento.getDataScadenza()));
 
             }
 
@@ -123,4 +124,34 @@ public class AbbonamentoDAO {
         }
 
     }
+    public List<Abbonamento> findAbbonamentiTessera(String tesseraId) {
+        List<Abbonamento> abbonamenti = new ArrayList<>();
+        try {
+            TypedQuery<Abbonamento> query = em.createQuery("SELECT a FROM Abbonamento a WHERE a.idTessera.id = :tesseraId", Abbonamento.class);
+            query.setParameter("tesseraId", UUID.fromString(tesseraId));
+
+            abbonamenti = query.getResultList();
+
+            if (abbonamenti.isEmpty()) {
+                System.out.println("Non ci sono Abbonamenti su questa tessera!");
+            }
+
+
+        } catch (IllegalArgumentException e) {
+            // Gestisce errori relativi ai parametri della query, come un formato UUID non valido
+            System.err.println("Errore nei parametri della query: " + e.getMessage());
+        } catch (NoResultException e) {
+            // Gestisce il caso in cui non ci sono risultati per la query
+            System.err.println("Nessun abbonamento trovato per l'ID tessera: " + tesseraId);
+        } catch (PersistenceException e) {
+            // Gestisce errori generali di persistenza come problemi con la connessione al database
+            System.err.println("Errore durante l'accesso al database: " + e.getMessage());
+        } catch (Exception e) {
+            // Gestisce eventuali altre eccezioni
+            System.err.println("Errore imprevisto: " + e.getMessage());
+        }
+        return   abbonamenti;
+    }
+
+
 }
