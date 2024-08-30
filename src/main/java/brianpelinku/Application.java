@@ -535,25 +535,7 @@ boolean start = true;
                 ad.save(abbonamento);
 
                 // Scelta della tratta
-                List<Tratta> tratte = tratte();
-                System.out.println("Scegli la tratta: ");
-                for (int i = 0; i < tratte.size(); i++) {
-                    System.out.println("Premi " + (i + 1) + " per " + tratte.get(i).getNome());
-                }
-
-                try {
-                    int scegliTratta = Integer.parseInt(scanner.nextLine().trim()) - 1;
-                    if (scegliTratta >= 0 && scegliTratta < tratte.size()) {
-                        Tratta trattoScelto = tratte.get(scegliTratta);
-                        System.out.println("Hai scelto la tratta " + trattoScelto.getNome());
-                        System.out.println("Buon viaggio!");
-                        esciContinua(tesseraID);
-                    } else {
-                        System.out.println("Scelta non valida. Inserire un numero tra 1 e " + tratte.size() + ".");
-                    }
-                } catch (NumberFormatException e) {
-                    System.out.println("Input non valido. Inserire un numero intero.");
-                }
+                scegliTratta(tesseraID);
 
             } catch (Exception e) {
                 System.out.println("Si è verificato un errore: " + e.getMessage());
@@ -581,9 +563,9 @@ boolean start = true;
                     trattoScelto = tratte.get(scegliTratta);
                     System.out.println("Hai scelto la tratta " + trattoScelto.getNome() + " \n");
                     Mezzo mezzoScelto = scegliMezzo(trattoScelto);
-                    Biglietto bigliettoScelto = scegliBiglietto(tesseraID);
-                    // Timbratura
-                    timbraBiglietto(mezzoScelto, bigliettoScelto);
+
+                    bigliettoAbbonamento(mezzoScelto,tesseraID);
+
                     break; // Esci dal ciclo dopo una selezione valida
                 } else {
                     System.err.println("Scelta NON valida. Inserire un numero tra 1 e " + tratte.size());
@@ -769,6 +751,112 @@ boolean start = true;
                 }
             } catch (NumberFormatException e) {
                 System.err.println("Input non valido. Inserire un numero intero.");
+            } catch (Exception e) {
+                System.err.println("Si è verificato un errore: " + e.getMessage());
+            }
+        }
+    }
+
+    public static void bigliettoAbbonamento(Mezzo mezzoScelto, Tessera tesseraID) {
+        while (true) {
+            try {
+                int scelta = -1;
+                while (scelta < 0 || scelta > 1) {
+                    System.out.println("Premi 1 per timbrare il biglietto");
+                    System.out.println("Premi 2 per usare un abbonamento");
+
+                    try {
+                        scelta = Integer.parseInt(scanner.nextLine()) - 1;
+                        if (scelta < 0 || scelta > 1) {
+                            System.err.println("Scelta NON valida. Inserire un numero intero tra 1 e 2.");
+                        }
+                    } catch (NumberFormatException e) {
+                        System.err.println("Input non valido. Inserire un numero intero.");
+                    }
+                }
+
+                switch (scelta) {
+                    case 0: // Corrisponde a "Premi 1 per timbrare il biglietto"
+                        Biglietto bigliettoScelto = scegliBiglietto(tesseraID);
+                        timbraBiglietto(mezzoScelto, bigliettoScelto);
+                        return; // Esce dal ciclo dopo aver timbrato il biglietto
+
+                    case 1: // Corrisponde a "Premi 2 per usare un abbonamento"
+                        List<Abbonamento> abbonamentiTessera = ad.findAbbonamentiTessera(tesseraID.getId().toString());
+
+                        if (abbonamentiTessera.isEmpty()) {
+                            System.out.println("Nessun abbonamento disponibile. Premi 1 per comprare un nuovo abbonamento o un biglietto.");
+                            int opzioneScelta = -1;
+                            while (opzioneScelta < 0 || opzioneScelta > 1) {
+                                try {
+                                    opzioneScelta = Integer.parseInt(scanner.nextLine()) - 1;
+                                    if (opzioneScelta < 0 || opzioneScelta > 1) {
+                                        System.err.println("Scelta NON valida. Inserire 1 per comprare un nuovo abbonamento o biglietto.");
+                                    }
+                                } catch (NumberFormatException e) {
+                                    System.err.println("Input non valido. Inserire un numero intero.");
+                                }
+                            }
+                            if (opzioneScelta == 0) {
+                                sceltaPuntoEmissioneEOperazione(tesseraID);
+                                return; // Esce dal ciclo dopo aver acquistato un nuovo abbonamento o biglietto
+                            }
+                            continue;
+                        }
+
+                        for (int i = 0; i < abbonamentiTessera.size(); i++) {
+                            System.out.println("Premi " + (i + 1) + " per " + abbonamentiTessera.get(i).getId() + " con scadenza il " + abbonamentiTessera.get(i).getDataScadenza());
+                        }
+
+                        int nrAbbonamentoScelto = -1;
+                        while (nrAbbonamentoScelto < 0 || nrAbbonamentoScelto >= abbonamentiTessera.size()) {
+                            try {
+                                nrAbbonamentoScelto = Integer.parseInt(scanner.nextLine()) - 1;
+                                if (nrAbbonamentoScelto < 0 || nrAbbonamentoScelto >= abbonamentiTessera.size()) {
+                                    System.err.println("Scelta NON valida. Inserire un numero tra 1 e " + abbonamentiTessera.size());
+                                }
+                            } catch (NumberFormatException e) {
+                                System.err.println("Input non valido. Inserire un numero intero.");
+                            }
+                        }
+
+                        Abbonamento abbonamentoScelto = abbonamentiTessera.get(nrAbbonamentoScelto);
+
+                        if (abbonamentoScelto.getDataScadenza().isAfter(LocalDate.now())) {
+                            System.out.println("L'abbonamento scelto è ancora valido! Buon viaggio!");
+                            return; // Esce dal ciclo dopo aver scelto un abbonamento valido
+                        } else {
+                            System.out.println("L'abbonamento scelto è scaduto il " + abbonamentoScelto.getDataScadenza());
+                            System.out.println("Scegli un altro abbonamento oppure comprane uno nuovo!");
+
+                            int opzioneScelta = -1;
+                            while (opzioneScelta < 0 || opzioneScelta > 1) {
+                                System.out.println("Premi 1 per scegliere un altro abbonamento");
+                                System.out.println("Premi 2 per comprare un nuovo abbonamento o un biglietto");
+
+                                try {
+                                    opzioneScelta = Integer.parseInt(scanner.nextLine()) - 1;
+                                    if (opzioneScelta < 0 || opzioneScelta > 1) {
+                                        System.err.println("Scelta NON valida. Inserire 1 o 2.");
+                                    }
+                                } catch (NumberFormatException e) {
+                                    System.err.println("Input non valido. Inserire un numero intero.");
+                                }
+                            }
+
+                            if (opzioneScelta == 0) {
+                                continue; // Ritorna al ciclo principale per scegliere un altro abbonamento
+                            } else if (opzioneScelta == 1) {
+                                sceltaPuntoEmissioneEOperazione(tesseraID);
+                                return; // Esce dal ciclo dopo aver acquistato un nuovo abbonamento o biglietto
+                            }
+                        }
+                        break;
+
+                    default:
+                        System.err.println("Scelta NON valida. Inserire un numero intero tra 1 e 2.");
+                        break;
+                }
             } catch (Exception e) {
                 System.err.println("Si è verificato un errore: " + e.getMessage());
             }

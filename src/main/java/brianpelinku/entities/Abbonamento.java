@@ -20,6 +20,9 @@ public class Abbonamento {
     @Enumerated(EnumType.STRING)
     private Durata durata;
 
+    @Column(name = "data_scadenza", nullable = false)
+    private LocalDate dataScadenza;
+
     @ManyToOne
     @JoinColumn(name = "id_tessera")
     private Tessera idTessera;
@@ -36,6 +39,13 @@ public class Abbonamento {
         this.durata = durata;
         this.idTessera = idTessera;
         this.idPuntoEmissione = idPuntoEmissione;
+        if (durata == Durata.SETTIMANALE) {
+            this.dataScadenza = dataEmissione.plusWeeks(1);
+        } else if (durata == Durata.MENSILE) {
+            this.dataScadenza = dataEmissione.plusMonths(1);
+        }else {
+            this.dataScadenza = dataEmissione.plusYears(1);
+        }
     }
 
     public UUID getId() {
@@ -56,6 +66,14 @@ public class Abbonamento {
 
     public void setDurata(Durata durata) {
         this.durata = durata;
+    }
+
+    public LocalDate getDataScadenza() {
+        return dataScadenza;
+    }
+
+    public void setDataScadenza(LocalDate dataScadenza) {
+        this.dataScadenza = dataScadenza;
     }
 
     public Tessera getIdTessera() {
