@@ -757,6 +757,7 @@ boolean start = true;
         }
     }
 
+    //gestione errori ok
     public static void bigliettoAbbonamento(Mezzo mezzoScelto, Tessera tesseraID) {
         while (true) {
             try {
